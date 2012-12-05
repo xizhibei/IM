@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <style name="ChattingUISplit">
+        <item name="android:textSize">13.0dip</item>
+        <item name="android:textColor">#ff56616c</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingTop">11.0dip</item>
+        <item name="android:paddingBottom">6.0dip</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="ChattingUIText">
+        <item name="android:textSize">15.0dip</item>
+        <item name="android:textColor">#ff000000</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxWidth">200.0dip</item>
+    </style>
+    
+    <style name="MMTitleStyle">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:background">@drawable/mmtitle_bg</item>
+    </style>
+    
+	<style name="MMTheme.Basic" parent="@android:style/Theme">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleSize">40.0dip</item>
+        <item name="android:windowSoftInputMode">stateHidden</item>
+        <item name="android:windowTitleBackgroundStyle">@style/MMTitleStyle</item>
+        
+    </style>
+</resources>

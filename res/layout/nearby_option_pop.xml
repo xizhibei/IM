@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nearby_option_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/nearby_option_gender"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white" />
+
+    <RadioGroup
+        android:id="@+id/nearby_option_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/gender_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:checked="true"
+            android:text="@string/gender_all"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/gender_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:text="@string/gender_male"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/gender_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.20"
+            android:text="@string/gender_female"
+            android:textColor="@color/white" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/nearby_option_pop_time"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/white" />
+
+    <RadioGroup
+        android:id="@+id/nearby_option_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/time_15m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/nearby_option_pop_time_15m"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/time_1h"
+            android:layout_width="93dp"
+            android:layout_height="wrap_content"
+            android:text="@string/nearby_option_pop_time_1h"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/time_12h"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nearby_option_pop_time_12h"
+            android:textColor="@color/white" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ok" />
+    </LinearLayout>
+
+</LinearLayout>

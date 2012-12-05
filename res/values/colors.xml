@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="blue">#ffccddff</color>
+    <color name="grey">#ff808080</color>
+    <color name="pls_talk_normal">#ff707277</color>
+    <color name="search_hint">#ffcccccc</color>
+    <color name="green">#FF00FF00</color>
+</resources>

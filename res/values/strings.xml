@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="HOSTADDR">http://192.168.0.34</string><!-- No '/' at the end of addr -->
+    <string name="hello">Hello World, TestActivity!</string>
+    <string name="app_name">IM</string>
+    <string name="alert_dialog_single_choice">SingleChoice</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="alert_dialog_cancel">Cancel</string>
+    <string name="select_dialog">Select</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_publish">PublishActivity</string>
+    <string name="title_activity_account">AccountActivity</string>
+    <string name="title_activity_msg">MsgActivity</string>
+    
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="nearby_option_gender">想看到的用户</string>
+    <string name="gender_all">全部</string>
+    <string name="gender_male">男</string>
+    <string name="gender_female">女</string>
+    
+    <string name="nearby_option_pop_time">出现的时间</string>
+    <string name="nearby_option_pop_time_15m">15分钟</string>
+    <string name="nearby_option_pop_time_1h">1小时</string>
+    <string name="nearby_option_pop_time_12h">12小时</string>
+    
+    <string name="nearby_option_pop_age_lt20">20岁以下</string>
+    <string name="nearby_option_pop_age_30_40">30到40岁</string>
+    <string name="nearby_option_pop_age_gt40">40岁以上</string>
+    
+    <string name="lbstoast_icon_description">icon</string>
+    
+    <string name="user_detail_name">昵称</string>
+    <string name="user_detail_gender">性别</string>
+    <string name="user_detail_regdate">注册时间</string>
+    <string name="user_detail_age">年龄</string>
+    
+    <string name="want_detail_type">我想要去</string>
+    <string name="want_detail_gender">性别要求</string>
+    <string name="want_detail_start">开始时间</string>
+    <string name="want_detail_end">结束时间</string>
+    <string name="want_detail_descip">详细描述</string>
+    
+    <string name="publish_type">活动类型</string>
+    <string name="publish_start">开始</string>
+    <string name="publish_end">结束</string>
+    <string name="publish_gender">想找的伙伴性别</string>
+    <string name="publish_detail">详细要求</string>
+    <string name="publish_ok">发布</string>
+</resources>
