@@ -78,7 +78,7 @@ public class UserModel extends AbstractModel{
         cv.put("distance",u.distance);
         
 		Cursor c = db.rawQuery("select count(*) from " + tableName + " where uid = " + u.uid,null);
-		if(c.moveToNext() && c.getInt(0) == 0){
+		if(!c.moveToNext()){
 			cv.put("uid", u.uid);
 			db.insert(tableName, null,cv);
 		}else{
@@ -89,7 +89,7 @@ public class UserModel extends AbstractModel{
 	
 	public User getUser(String uid){
 		Cursor c = db.rawQuery("select * from " + tableName + " where uid = " + uid, null);
-		if(c.moveToNext() && c.getCount() == 0){
+		if(!c.moveToNext()){
 			c.close();
 			return null;
 		}

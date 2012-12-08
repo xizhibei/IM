@@ -69,6 +69,10 @@ public class User {
 		this.localAvatarPath = localavatar;
 	}
 
+	public Drawable getAvatar(){
+		Bitmap bitmap = BitmapFactory.decodeFile(localAvatarPath);
+		return new BitmapDrawable(bitmap);
+	}
 	public PeopleOverlayItem toOverlayItem(){
 		Drawable d = null;
 		if(localAvatarPath != null){

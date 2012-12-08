@@ -8,7 +8,7 @@ public class DBHelper extends SQLiteOpenHelper{
 	
 	private static final int Version = 1;
 	private static final String CreateMsgTable = 
-			"CREATE TABLE IF NOT EXISTS msg (`mid` integer PRIMARY KEY AUTOINCREMENT,`targetid` integer , `content` text ,`type` integer ,`time` integer )";
+			"CREATE TABLE IF NOT EXISTS msg (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`readed` integer )";
 	private static final String CreateUserTable = 
 			"CREATE TABLE IF NOT EXISTS user " +
 			"(`uid` integer PRIMARY KEY AUTOINCREMENT," +
@@ -27,8 +27,8 @@ public class DBHelper extends SQLiteOpenHelper{
 	private static final String CreateClusterTable = 
 			"CREATE TABLE IF NOT EXISTS cluster (`cid` integer PRIMARY KEY AUTOINCREMENT,`latitude` integer ,`longtitude` integer ,`radix` integer )";
 	
-	private static final String CreateMsgListTable = 
-			"CREATE TABLE IF NOT EXISTS cluster (`cid` integer PRIMARY KEY AUTOINCREMENT,`latitude` integer ,`longtitude` integer ,`radix` integer )";
+	private static final String CreateUnreadMsgTable = 
+			"CREATE TABLE IF NOT EXISTS unreadmsg (`id` integer PRIMARY KEY,`uid` text,`count` integer )";
 	
 	private static final String CreateSendTaskTable = 
 			"CREATE TABLE IF NOT EXISTS msg (`mid` integer PRIMARY KEY AUTOINCREMENT,`targetid` integer , `content` text ,`type` integer ,`time` integer )";

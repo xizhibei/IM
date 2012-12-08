@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<com.qicq.im.adapter.ResizeLayout
+<com.qicq.im.msg.ResizeLayout
 	android:id="@+id/chat_root"
 	android:focusable="false" 
 	android:focusableInTouchMode="false" 
@@ -116,4 +116,4 @@
                 	android:layout_height="fill_parent" 
                 	android:src="@drawable/pick_image" />
             </LinearLayout>
-</com.qicq.im.adapter.ResizeLayout>
+</com.qicq.im.msg.ResizeLayout>

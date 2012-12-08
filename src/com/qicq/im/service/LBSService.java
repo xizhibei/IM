@@ -70,20 +70,20 @@ public class LBSService extends Service {
 		Log.v("Service","onBind");
 		if (null == binder)
 			binder = new LBSBinder();
-		
+
 		if(userConfig == null)
 			userConfig = new UserConfig(this,"config");
-		
+
 		String cookie = userConfig.getCookie();
 		if(cookie != null)
 			api.setCookie(cookie);
-		
+
 		String uid = userConfig.getUid();
 		if(uid != null && !isDatabaseOpened())
 			initDatabase(userConfig.getUid());
-		
+
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		
+
 		return binder;
 	}
 
@@ -100,10 +100,12 @@ public class LBSService extends Service {
 		rcvMsgThread.addMsgRcvListener(new MsgRcvListener() {
 
 			public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
-				if (talkingToId == null && userConfig.isShowNotification()) {
+				if (userConfig.isShowNotification()) {
 					ChatMessage m = msgs.get(msgs.size() - 1);
-					User u = userModel.getUser(m.targetId);
-					showNotification(R.drawable.card,"新消息",u.name,m.content);
+					if(m.targetId.equals(talkingToId)){
+						User u = getUser(m.targetId);
+						showNotification(R.drawable.card,"新消息",u.name,m.content);
+					}
 				}
 				msgModel.insertAll(msgs);
 			}
@@ -128,19 +130,19 @@ public class LBSService extends Service {
 		});
 		networkMonitorThread.start();
 	}
-	
+
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
 		Log.v("Service","onStart");
 	}
-	
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		Log.v("Service","onStartCommand");
 		return super.onStartCommand(intent, flags, startId);
 	}
-	
+
 	public boolean isDatabaseOpened(){
 		return userModel != null && msgModel != null;
 	}
@@ -163,7 +165,7 @@ public class LBSService extends Service {
 		sendMsgThread.setStop();
 	}
 
-	
+
 
 	public LBSBinder getBinder() {
 		return binder;
@@ -196,13 +198,13 @@ public class LBSService extends Service {
 
 	}
 
-//	public boolean isStarted() {
-//		return isStarted;
-//	}
-//
-//	public void setStarted(boolean isStarted) {
-//		this.isStarted = isStarted;
-//	}
+	//	public boolean isStarted() {
+	//		return isStarted;
+	//	}
+	//
+	//	public void setStarted(boolean isStarted) {
+	//		this.isStarted = isStarted;
+	//	}
 
 	public User getUser(){
 		return getUser(userConfig.getUid());
@@ -212,7 +214,8 @@ public class LBSService extends Service {
 		User u = userModel.getUser(uid);
 		if(u == null || userConfig.isFriendNeedUpdate()){
 			u = api.getUser(uid);
-			userModel.updateUser(u);
+			if(u != null)
+				userModel.updateUser(u);
 		}
 		return u;
 	}

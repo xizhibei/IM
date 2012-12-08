@@ -24,6 +24,11 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Main access point of the whole program
+ * @author X
+ *
+ */
 public class LBSApp extends Application{
 
 	public static LBSApp app = null;
@@ -259,6 +264,14 @@ public class LBSApp extends Application{
 
 	public void saveAllMsg(List<ChatMessage> msgs){
 		service.msgModel.insertAll(msgs);
+	}
+	
+	public List<ChatMessage> getAllChattingList(){
+		 return service.msgModel.fetchAllChatting();
+	}
+	
+	public List<Integer> getAllUnreadCount(){
+		return service.msgModel.fetchAllUnreadCount();
 	}
 
 	public int PublishDemands(String name,String startH,String startM,

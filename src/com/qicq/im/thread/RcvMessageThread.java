@@ -15,7 +15,7 @@ public class RcvMessageThread extends AbstractMessageThread{
 	//private boolean continueRcv = true;
 	//private APIManager api = null;
 	public final static long MAX_TIME = 128000;
-	public final static long MIN_TIME = 1000;
+	public final static long MIN_TIME = 2000;
 	//private long sleeptime = 1000;
 	//private boolean networkConnect = true;
 	//private boolean needPause = false;
