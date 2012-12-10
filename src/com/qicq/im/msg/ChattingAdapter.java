@@ -55,7 +55,7 @@ public class ChattingAdapter extends BaseAdapter {
 			holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
 			convertView.setTag(holder);
 		}
-		holder.text.setText(message.direction);
+		holder.text.setText(message.content);
 
 		return convertView;
 	}

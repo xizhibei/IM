@@ -146,7 +146,7 @@ public class MsgActivity extends Activity {
 	// …Ë÷√adapter
 	private void setAdapterForThis() {
 		List<ChatMessage> tmp = app.getAllMsg(friendUID);
-		if(tmp != null)
+		if(tmp.size() != 0)
 			messages.addAll(tmp);
 		chatHistoryAdapter = new ChattingAdapter(this, messages);
 		chatHistoryLv.setAdapter(chatHistoryAdapter);

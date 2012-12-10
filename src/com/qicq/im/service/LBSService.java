@@ -7,6 +7,7 @@ import com.qicq.im.api.APIManager;
 import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.User;
 import com.qicq.im.config.UserConfig;
+import com.qicq.im.db.ChatListModel;
 import com.qicq.im.db.MsgModel;
 import com.qicq.im.db.UserModel;
 import com.qicq.im.msg.MsgRcvEvent;
@@ -52,6 +53,7 @@ public class LBSService extends Service {
 
 	public UserModel userModel;
 	public MsgModel msgModel;
+	public ChatListModel chatListModel;
 
 	public class LBSBinder extends Binder {
 		public LBSService getService() {
@@ -102,12 +104,16 @@ public class LBSService extends Service {
 			public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
 				if (userConfig.isShowNotification()) {
 					ChatMessage m = msgs.get(msgs.size() - 1);
-					if(m.targetId.equals(talkingToId)){
+					if(!m.targetId.equals(talkingToId)){
 						User u = getUser(m.targetId);
 						showNotification(R.drawable.card,"ÐÂÏûÏ¢",u.name,m.content);
 					}
 				}
 				msgModel.insertAll(msgs);
+				chatListModel.updateNewMsg(msgs);
+				for(ChatMessage m : msgs){
+					getUser(m.targetId);//Just update database to match chatlist
+				}
 			}
 		});
 
@@ -150,12 +156,14 @@ public class LBSService extends Service {
 	public void initDatabase(String uid){
 		userModel = new UserModel(this,uid);
 		msgModel = new MsgModel(this,uid);
+		chatListModel = new ChatListModel(this,uid);
 	}
 
 	public void closeDatabase(){
 		userModel.getDB().close();
 		userModel = null;
 		msgModel = null;
+		chatListModel = null;
 	}
 
 	@Override
@@ -213,9 +221,11 @@ public class LBSService extends Service {
 	public User getUser(String uid){
 		User u = userModel.getUser(uid);
 		if(u == null || userConfig.isFriendNeedUpdate()){
-			u = api.getUser(uid);
-			if(u != null)
-				userModel.updateUser(u);
+			User tmp = api.getUser(uid);
+			if(tmp != null){
+				u = tmp;
+				userModel.updateUser(tmp);
+			}
 		}
 		return u;
 	}

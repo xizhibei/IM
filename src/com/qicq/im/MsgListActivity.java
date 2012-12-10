@@ -81,11 +81,8 @@ public class MsgListActivity extends Activity{
 	
 	private void initMsgListAdapter(){
 		msgListAdapter = new MsgListAdapter(this);
-		List<ChatMessage> tmp = app.getAllChattingList();
-		for(ChatMessage m : tmp){
-			User user = app.getUser(m.targetId);
-			msgListAdapter.addItem(new ChatListItem(m,user));
-		}
+		List<ChatListItem> tmp = app.getAllChattingList();
+		msgListAdapter.addItemDirectly(tmp);
 	}
 	
 	@Override
@@ -101,6 +98,7 @@ public class MsgListActivity extends Activity{
 	@Override
 	public void onDestroy(){
 		app.removeMsgRcvListener(m);
+		app.saveAllChattingList(msgListAdapter.getItems());
 		super.onDestroy();
 	}
 

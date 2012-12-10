@@ -26,20 +26,33 @@ public class UserModel extends AbstractModel{
 	public List<User> fetchAll(String sql){
 		Cursor c = db.rawQuery(sql, null);		
 		List<User> users = new ArrayList<User>();
+		
+		int Idx_uid = c.getColumnIndex("uid");
+		int Idx_type = c.getColumnIndex("type");
+		int Idx_name = c.getColumnIndex("name");
+		int Idx_sex = c.getColumnIndex("sex");
+		int Idx_age = c.getColumnIndex("age");
+		int Idx_regdate = c.getColumnIndex("regdate");
+		int Idx_lastupdate = c.getColumnIndex("lastupdate");
+		int Idx_serverAvatarUrl = c.getColumnIndex("serverAvatarUrl");
+		int Idx_localAvatarPath = c.getColumnIndex("localAvatarPath");
+		int Idx_lat = c.getColumnIndex("lat");
+		int Idx_lng = c.getColumnIndex("lng");
+		int Idx_distance = c.getColumnIndex("distance");
+		
 		while(c.moveToNext()){
-			users.add( new User(
-					c.getInt(0),
-					c.getInt(1),
-					c.getString(2),
-					c.getString(3),
-					c.getInt(4),
-					c.getString(5),
-					c.getString(6),
-					c.getInt(7),
-					c.getInt(8),
-					c.getFloat(9),
-					c.getString(10),
-					c.getString(11)
+			users.add( new User(c.getInt(Idx_type),
+					c.getInt(Idx_uid), 
+					c.getString(Idx_name), 
+					c.getString(Idx_sex), 
+					c.getInt(Idx_age), 
+					c.getString(Idx_regdate), 
+					c.getString(Idx_lastupdate), 
+					c.getInt(Idx_lat), 
+					c.getInt(Idx_lng), 
+					c.getFloat(Idx_distance), 
+					c.getString(Idx_serverAvatarUrl), 
+					c.getString(Idx_localAvatarPath)
 					));
 		}
 		c.close();
@@ -77,12 +90,14 @@ public class UserModel extends AbstractModel{
         cv.put("lng",u.lng);
         cv.put("distance",u.distance);
         
-		Cursor c = db.rawQuery("select count(*) from " + tableName + " where uid = " + u.uid,null);
+		Cursor c = db.rawQuery("select * from " + tableName + " where uid = " + u.uid,null);
 		if(!c.moveToNext()){
 			cv.put("uid", u.uid);
-			db.insert(tableName, null,cv);
+			long ret = db.insert(tableName, null,cv);
+			Log.v("UserModel","Insert return " + ret);
 		}else{
-			db.update(tableName, cv, "uid = " + u.uid, null);
+			int ret = db.update(tableName, cv, "uid = " + u.uid, null);
+			Log.v("UserModel","Update affected return " + ret);
 		}
 		c.close();
 	}
@@ -91,22 +106,35 @@ public class UserModel extends AbstractModel{
 		Cursor c = db.rawQuery("select * from " + tableName + " where uid = " + uid, null);
 		if(!c.moveToNext()){
 			c.close();
+			Log.v("UserModel","Fail to get user " + uid);
 			return null;
 		}
 		
-		User u = new User(
-				c.getInt(0),
-				c.getInt(1),
-				c.getString(2),
-				c.getString(3),
-				c.getInt(4),
-				c.getString(5),
-				c.getString(6),
-				c.getInt(7),
-				c.getInt(8),
-				c.getFloat(9),
-				c.getString(10),
-				c.getString(11)
+		int Idx_uid = c.getColumnIndex("uid");
+		int Idx_type = c.getColumnIndex("type");
+		int Idx_name = c.getColumnIndex("name");
+		int Idx_sex = c.getColumnIndex("sex");
+		int Idx_age = c.getColumnIndex("age");
+		int Idx_regdate = c.getColumnIndex("regdate");
+		int Idx_lastupdate = c.getColumnIndex("lastupdate");
+		int Idx_serverAvatarUrl = c.getColumnIndex("serverAvatarUrl");
+		int Idx_localAvatarPath = c.getColumnIndex("localAvatarPath");
+		int Idx_lat = c.getColumnIndex("lat");
+		int Idx_lng = c.getColumnIndex("lng");
+		int Idx_distance = c.getColumnIndex("distance");
+		
+		User u = new User(c.getInt(Idx_type),
+				c.getInt(Idx_uid), 
+				c.getString(Idx_name), 
+				c.getString(Idx_sex), 
+				c.getInt(Idx_age), 
+				c.getString(Idx_regdate), 
+				c.getString(Idx_lastupdate), 
+				c.getInt(Idx_lat), 
+				c.getInt(Idx_lng), 
+				c.getFloat(Idx_distance), 
+				c.getString(Idx_serverAvatarUrl), 
+				c.getString(Idx_localAvatarPath)
 				);
 		c.close();
 		return u;

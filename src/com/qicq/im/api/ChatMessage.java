@@ -7,9 +7,6 @@ public class ChatMessage {
 	public static final int MESSAGE_FROM = 0;
 	public static final int MESSAGE_TO = 1;
 	
-	public static final int MESSAGE_READED = 0;
-	public static final int MESSAGE_UNREAD = 1;
-	
 	public static final int MESSAGE_TYPE_TEXT = 0;
 	public static final int MESSAGE_TYPE_HELLO = 1;
 	public static final int MESSAGE_TYPE_IMAGE = 2;
@@ -50,7 +47,7 @@ public class ChatMessage {
 		return msg;
 	}
 	
-	public static ChatMessage fromDatabase(int direction, String content,String targetId,int type,int time,int readed){
+	public static ChatMessage fromDatabase(int direction, String content,String targetId,int type,int time){
 		ChatMessage msg = new ChatMessage();
 		msg.direction = direction;
 		msg.content = content;
@@ -58,10 +55,6 @@ public class ChatMessage {
 		msg.type = type;
 		msg.time = time;
 		msg.isStored = true;
-		if(readed == MESSAGE_READED)
-			msg.isReaded = true;
-		else
-			msg.isReaded = false;
 		return msg;
 	}
 	

@@ -10,6 +10,7 @@ import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.LocationCluster;
 import com.qicq.im.api.User;
 import com.qicq.im.config.UserConfig;
+import com.qicq.im.msg.ChatListItem;
 import com.qicq.im.msg.MsgRcvListener;
 import com.qicq.im.service.LBSService;
 import com.qicq.im.service.LBSService.LBSBinder;
@@ -266,12 +267,12 @@ public class LBSApp extends Application{
 		service.msgModel.insertAll(msgs);
 	}
 	
-	public List<ChatMessage> getAllChattingList(){
-		 return service.msgModel.fetchAllChatting();
+	public List<ChatListItem> getAllChattingList(){
+		return service.chatListModel.fetchAll();
 	}
 	
-	public List<Integer> getAllUnreadCount(){
-		return service.msgModel.fetchAllUnreadCount();
+	public void saveAllChattingList(List<ChatListItem> clis){
+		 service.chatListModel.insertAll(clis);
 	}
 
 	public int PublishDemands(String name,String startH,String startM,

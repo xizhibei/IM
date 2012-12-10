@@ -56,6 +56,7 @@ public class User {
 
 	public User(int type,int uid,String name,String sex,int age,String regdate,String lastupdate,
 			int lat,int lng,float distance,String avatar,String localavatar){
+		this.type = type;
 		this.uid = uid;
 		this.name = name;
 		this.sex = sex;
@@ -71,6 +72,8 @@ public class User {
 
 	public Drawable getAvatar(){
 		Bitmap bitmap = BitmapFactory.decodeFile(localAvatarPath);
+		if(bitmap == null)
+			return null;
 		return new BitmapDrawable(bitmap);
 	}
 	public PeopleOverlayItem toOverlayItem(){

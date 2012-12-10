@@ -23,7 +23,7 @@ public class UserConfig {
 	private final static String FIELD_NEED_VIBRATION = "needVibration";
 	
 	private final static String NULL = null;
-	private final static int UPDATE_INTERVAL = 900;//15 minutes
+	private final static int UPDATE_INTERVAL = 1800;//15 minutes
 	
 	public UserConfig(Context context,String filename){
 		sp = context.getSharedPreferences(filename, Context.MODE_PRIVATE);
