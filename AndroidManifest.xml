@@ -31,6 +31,8 @@
         </activity>
         <activity android:name="FriendActivity" >    
         </activity>
+        <activity android:name="WantDetailActivity" >    
+        </activity>
         <activity android:name="LogoActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
