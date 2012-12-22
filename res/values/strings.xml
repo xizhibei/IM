@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="HOSTADDR">http://192.168.0.34</string><!-- No '/' at the end of addr -->
+    <string name="HOSTADDR">http://192.168.14.110</string><!-- No '/' at the end of addr -->
     <string name="hello">Hello World, TestActivity!</string>
     <string name="app_name">IM</string>
     <string name="alert_dialog_single_choice">SingleChoice</string>

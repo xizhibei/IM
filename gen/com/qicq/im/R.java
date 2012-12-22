@@ -82,7 +82,7 @@ public final class R {
         public static final int wifisms_insert_pressed_bg=0x7f02003b;
     }
     public static final class id {
-        public static final int activitySpinner=0x7f080042;
+        public static final int activitySpinner=0x7f080047;
         public static final int background_image=0x7f08000c;
         public static final int bmapsView=0x7f080032;
         public static final int capture_image=0x7f080014;
@@ -97,14 +97,13 @@ public final class R {
         public static final int datePicker1=0x7f080003;
         public static final int editText1=0x7f080007;
         public static final int email=0x7f080005;
-        public static final int endTimePicker=0x7f080044;
+        public static final int endTimePicker=0x7f080049;
         public static final int foreground_image=0x7f08000d;
         public static final int gender_all=0x7f080039;
         public static final int gender_female=0x7f08003b;
         public static final int gender_male=0x7f08003a;
         public static final int getlocation=0x7f080033;
-        public static final int image=0x7f080040;
-        public static final int imageView1=0x7f080047;
+        public static final int imageView1=0x7f08004c;
         public static final int img=0x7f080020;
         public static final int info=0x7f080022;
         public static final int login=0x7f080029;
@@ -122,6 +121,12 @@ public final class R {
         public static final int nearby_option_time=0x7f08003c;
         public static final int option=0x7f080031;
         public static final int pls_talk=0x7f080016;
+        public static final int popButton=0x7f080041;
+        public static final int popHead=0x7f080040;
+        public static final int popNeed=0x7f080045;
+        public static final int popNum=0x7f080042;
+        public static final int popOld=0x7f080044;
+        public static final int popSex=0x7f080043;
         public static final int publish=0x7f080030;
         public static final int pwd=0x7f080009;
         public static final int radioButton1=0x7f080002;
@@ -129,20 +134,20 @@ public final class R {
         public static final int recorder_ring=0x7f08000b;
         public static final int recording=0x7f080015;
         public static final int reg=0x7f080028;
-        public static final int scrollView1=0x7f080041;
+        public static final int scrollView1=0x7f080046;
         public static final int send_button=0x7f080012;
         public static final int send_image=0x7f080017;
-        public static final int sexSpinner=0x7f080046;
+        public static final int sexSpinner=0x7f08004b;
         public static final int sms_button_insert=0x7f080010;
-        public static final int startTimePicker=0x7f080043;
+        public static final int startTimePicker=0x7f080048;
         public static final int submit=0x7f08000a;
         public static final int talk_panel=0x7f080013;
         public static final int textView1=0x7f080000;
         public static final int textView2=0x7f080004;
         public static final int textView3=0x7f080008;
-        public static final int textView4=0x7f080045;
+        public static final int textView4=0x7f08004a;
         public static final int textView5=0x7f080006;
-        public static final int textView6=0x7f080050;
+        public static final int textView6=0x7f080055;
         public static final int text_editor=0x7f080011;
         public static final int time=0x7f080023;
         public static final int time_12h=0x7f08003f;
@@ -154,15 +159,15 @@ public final class R {
         public static final int toast_root=0x7f080024;
         public static final int uid=0x7f080027;
         public static final int uploading_pb=0x7f08001c;
-        public static final int user_detail_age=0x7f08004a;
-        public static final int user_detail_name=0x7f080048;
-        public static final int user_detail_regdate=0x7f080049;
-        public static final int want_detail_descip=0x7f080051;
-        public static final int want_detail_end=0x7f08004e;
-        public static final int want_detail_gender=0x7f08004f;
-        public static final int want_detail_start=0x7f08004d;
-        public static final int want_detail_type=0x7f08004c;
-        public static final int want_detail_username=0x7f08004b;
+        public static final int user_detail_age=0x7f08004f;
+        public static final int user_detail_name=0x7f08004d;
+        public static final int user_detail_regdate=0x7f08004e;
+        public static final int want_detail_descip=0x7f080056;
+        public static final int want_detail_end=0x7f080053;
+        public static final int want_detail_gender=0x7f080054;
+        public static final int want_detail_start=0x7f080052;
+        public static final int want_detail_type=0x7f080051;
+        public static final int want_detail_username=0x7f080050;
         public static final int web=0x7f080035;
     }
     public static final class integer {

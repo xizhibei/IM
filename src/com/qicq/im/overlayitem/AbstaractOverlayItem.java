@@ -21,4 +21,5 @@ public abstract class AbstaractOverlayItem extends OverlayItem implements IOverl
 		
 		return drawable;
 	}
+	
 }
