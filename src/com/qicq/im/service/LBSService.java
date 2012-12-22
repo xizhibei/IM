@@ -150,7 +150,7 @@ public class LBSService extends Service {
 	}
 
 	public boolean isDatabaseOpened(){
-		return userModel != null && msgModel != null;
+		return userModel != null && msgModel != null && chatListModel != null;
 	}
 
 	public void initDatabase(String uid){
@@ -167,10 +167,11 @@ public class LBSService extends Service {
 	}
 
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
+	public void onDestroy() {		
 		rcvMsgThread.setStop();
 		sendMsgThread.setStop();
+		networkMonitorThread.setStop();
+		super.onDestroy();
 	}
 
 

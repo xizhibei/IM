@@ -14,11 +14,13 @@ public class ChatMessage {
 	public static final int MESSAGE_TYPE_REQUEST = 4;
 
 	public int direction;
-	public String content;//if type is image or voice, content is filename/path
+	public String content;//if type is image or audio, content is filename/path
 	public String targetId;
 	public int time;
 	public boolean isStored = false;
 	public boolean isReaded = true;
+	
+	public int audioTime = 0;
 	
 	public int type;
 	

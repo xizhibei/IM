@@ -83,30 +83,29 @@ public class ChatListModel extends AbstractModel {
 		int Idx_distance = c.getColumnIndex("distance");
 
 		int Idx_count = c.getColumnIndex("count");
+
 		while (c.moveToNext()) {// int direction, String content,String
 			// targetId,boolean isStored
-			msgs.add(ChatListItem.fromDatabase(
-					ChatMessage.fromDatabase(
-							c.getInt(1), 
-							c.getString(2),
-							c.getString(3), 
-							c.getInt(4), 
-							c.getInt(5)
-							),
-							new User(c.getInt(Idx_type),
-									c.getInt(Idx_uid), 
-									c.getString(Idx_name), 
-									c.getString(Idx_sex), 
-									c.getInt(Idx_age), 
-									c.getString(Idx_regdate), 
-									c.getString(Idx_lastupdate), 
-									c.getInt(Idx_lat), 
-									c.getInt(Idx_lng), 
-									c.getFloat(Idx_distance), 
-									c.getString(Idx_serverAvatarUrl), 
-									c.getString(Idx_localAvatarPath)
-									), 
-									c.getInt(Idx_count)));
+			msgs.add(ChatListItem.fromDatabase(ChatMessage.fromDatabase(
+					c.getInt(1), 
+					c.getString(2),
+					c.getString(3), 
+					c.getInt(4), 
+					c.getInt(5)
+					),new User(c.getInt(Idx_type),
+							c.getInt(Idx_uid), 
+							c.getString(Idx_name), 
+							c.getString(Idx_sex), 
+							c.getInt(Idx_age), 
+							c.getString(Idx_regdate), 
+							c.getString(Idx_lastupdate), 
+							c.getInt(Idx_lat), 
+							c.getInt(Idx_lng), 
+							c.getFloat(Idx_distance), 
+							c.getString(Idx_serverAvatarUrl), 
+							c.getString(Idx_localAvatarPath)
+							), 
+					c.getInt(Idx_count)));
 		}
 		c.close();
 		Log.v("ChatListModel","fetch all " + msgs.size());

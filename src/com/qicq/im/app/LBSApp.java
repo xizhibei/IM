@@ -46,9 +46,26 @@ public class LBSApp extends Application{
 		if(!Utility.isNetworkAvailable(this.getApplicationContext())){
 			Toast.makeText(this, "网络出错啦！！！", Toast.LENGTH_LONG).show();
 		}	
+		
+//		IntentFilter filter = new IntentFilter();   
+//		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);  
+//		registerReceiver(networkStateReceiver, filter);
+		//unregisterReceiver(networkStateReceiver);
 
 		super.onCreate();
 	}
+
+//	private BroadcastReceiver networkStateReceiver = new BroadcastReceiver(){
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			Log.e("Network", "State changed");  
+//			if (Utility.isNetworkAvailable(context)) {  
+//				Toast.makeText(LBSApp.this, "您的网络连接已中断", Toast.LENGTH_LONG).show();  
+//			}   
+//		}
+//
+//	};
 
 	private ServiceConnection conn = new ServiceConnection() {  
 
@@ -75,10 +92,6 @@ public class LBSApp extends Application{
 		Intent intent = new Intent();
 		intent.setAction("com.qicq.im.service.LBSService");
 		startService(intent);
-	}
-
-	public void updateAllData(){
-		//TODO update user,location,user list and cluster...
 	}
 
 	@Override
@@ -266,13 +279,13 @@ public class LBSApp extends Application{
 	public void saveAllMsg(List<ChatMessage> msgs){
 		service.msgModel.insertAll(msgs);
 	}
-	
+
 	public List<ChatListItem> getAllChattingList(){
 		return service.chatListModel.fetchAll();
 	}
-	
+
 	public void saveAllChattingList(List<ChatListItem> clis){
-		 service.chatListModel.insertAll(clis);
+		service.chatListModel.insertAll(clis);
 	}
 
 	public int PublishDemands(String name,String startH,String startM,
@@ -287,5 +300,9 @@ public class LBSApp extends Application{
 	public List<LocationCluster> GetLocationCluster(int ltLat, int ltLng, 
 			int rbLat, int rbLng, int gender, int agelevel,String updatetime){
 		return api.GetLocationCluster(ltLat,ltLng,rbLat,rbLng,gender,agelevel,updatetime);
+	}
+	
+	public void UploadFile(String filename){
+		api.UploadFile(filename);
 	}
 }

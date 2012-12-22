@@ -61,7 +61,7 @@ public class RcvMessageThread extends AbstractMessageThread{
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					Log.e("RcvMessageThread",e.getMessage());
 				}
 			}
 			
@@ -81,7 +81,7 @@ public class RcvMessageThread extends AbstractMessageThread{
 			try {
 				Thread.sleep(sleeptime);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Log.e("RcvMessageThread",e.getMessage());
 			}
 		}
 	}

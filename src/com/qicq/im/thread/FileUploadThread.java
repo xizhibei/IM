@@ -6,19 +6,18 @@ import java.util.List;
 import android.util.Log;
 
 import com.qicq.im.api.APIManager;
-import com.qicq.im.api.ChatMessage;
 
-public class SendMessageThread extends AbstractMessageThread{
+public class FileUploadThread extends AbstractMessageThread{
 
-	private List<ChatMessage> msgs = new ArrayList<ChatMessage>();
+	private List<String> files = new ArrayList<String>();
 	
-	public SendMessageThread(APIManager api){
+	public FileUploadThread(APIManager api){
 		super(api);
 		this.api = api;
 		sleeptime = 100;
 	}
-	public void addMsgs(ChatMessage msg){
-		msgs.add(msg);
+	public void addMsgs(String file){
+		files.add(file);
 	}
 	
 	public void setSleepTime(long time){
@@ -27,25 +26,25 @@ public class SendMessageThread extends AbstractMessageThread{
 	
 	@Override
 	public void run() {
-		Log.i("SendMessageThread","Start");
+		Log.i("FileUploadThread","Start");
 		while(continuing){
 			while(!networkConnect || needPause){
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					Log.e("SendMessageThread",e.getMessage());
+					e.printStackTrace();
 				}
 			}
-			while(!msgs.isEmpty()){
-				int ret = api.SendMessage(msgs.get(0));
+			while(!files.isEmpty()){
+				int ret = api.UploadFile(files.get(0));
 				if(ret == 0)
-					msgs.remove(0);
+					files.remove(0);
 			}
 			
 			try {
 				Thread.sleep(sleeptime);
 			} catch (InterruptedException e) {
-				Log.e("SendMessageThread",e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}

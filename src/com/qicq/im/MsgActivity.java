@@ -1,8 +1,12 @@
 package com.qicq.im;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,7 +36,11 @@ import com.qicq.im.msg.MsgRcvListener;
 @SuppressLint("HandlerLeak")
 public class MsgActivity extends Activity {
 
-	protected static final String TAG = "MainActivity";
+	private static final String AUDIO_PATH = "/mnt/sdcard/QICQ/audio";
+	private MediaRecorder mRecorder = null;
+    private MediaPlayer mPlayer = null;
+    
+	protected static final String TAG = "MsgActivity";
 	private ChattingAdapter chatHistoryAdapter;
 	private List<ChatMessage> messages = new ArrayList<ChatMessage>();
 
@@ -45,9 +53,7 @@ public class MsgActivity extends Activity {
 	private PopupWindow menuWindow = null;
 
 	private TextView friendName;
-	
 	private String friendUID = null;
-	
 	private LBSApp app;
 
 	@Override
@@ -57,11 +63,11 @@ public class MsgActivity extends Activity {
 		setContentView(R.layout.chatting);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.chatting_title_bar);
 		chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
-		
+
 		app = (LBSApp)this.getApplication();
 		friendUID = this.getIntent().getStringExtra("uid");
 		setAdapterForThis();
-		
+
 		sendBtn = (Button) findViewById(R.id.send_button);
 		textEditor = (EditText) findViewById(R.id.text_editor);
 		sendImageIv = (ImageView) findViewById(R.id.send_image);
@@ -72,9 +78,11 @@ public class MsgActivity extends Activity {
 
 		friendName = (TextView) findViewById(R.id.chatting_contact_name);
 		friendName.setText(this.getIntent().getCharSequenceExtra("name"));
-		
-		
-		
+
+		File file = new File(AUDIO_PATH);
+		if(!file.exists())
+			file.mkdirs();
+
 		recording = findViewById(R.id.recording);
 		recording.setOnTouchListener(new View.OnTouchListener() {
 
@@ -86,7 +94,10 @@ public class MsgActivity extends Activity {
 					v.setBackgroundResource(R.drawable.hold_to_talk_normal);
 					if (menuWindow != null)
 						menuWindow.dismiss();
-					Log.d(TAG, "---onTouchEvent action:ACTION_UP");
+					//Log.d(TAG, "---onTouchEvent action:ACTION_UP");
+					stopRecording();
+					startPlaying();
+					//stopPlaying();
 					break;
 				case MotionEvent.ACTION_DOWN:
 					v.setBackgroundResource(R.drawable.hold_to_talk_pressed);
@@ -97,9 +108,9 @@ public class MsgActivity extends Activity {
 					view.findViewById(R.id.recorder_ring).setVisibility(View.VISIBLE);
 					view.setBackgroundResource(R.drawable.pls_talk);
 					menuWindow.showAtLocation(root, Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-					Log.d(TAG, "---onTouchEvent action:ACTION_DOWN");
+					//Log.d(TAG, "---onTouchEvent action:ACTION_DOWN");
 					// AudioRecorder recorder=new AudioRecorder();
-
+					startRecording();
 					break;
 
 				}
@@ -107,13 +118,54 @@ public class MsgActivity extends Activity {
 				return true;
 			}
 		});
-		
-		
+
+
 		app.addMsgRcvListener(m);
 		app.setTalkingToId(friendUID);
 
 	}
 	
+	
+    private String audioName = "/mnt/sdcard/QICQ/test.amr";
+
+    private void startPlaying() {
+    	if(mPlayer == null)
+    		mPlayer = new MediaPlayer();
+    	else
+    		mPlayer.reset();
+        try {
+            mPlayer.setDataSource(audioName);
+            mPlayer.prepare();
+            mPlayer.start();
+        } catch (IOException e) {
+            Log.e("Record audio", "prepare() failed");
+        }
+    }
+    
+    private void startRecording() {
+    	if(mRecorder == null)
+    		mRecorder = new MediaRecorder();
+    	else
+    		mRecorder.reset();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+        mRecorder.setOutputFile(audioName);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        try {
+            mRecorder.prepare();
+            mRecorder.start();
+        } catch (IOException e) {
+            Log.e("Record audio", "prepare() failed " + e.getMessage());
+        }
+        
+    }
+    private void stopRecording() {
+        mRecorder.stop();
+//        mRecorder.reset();
+//        mRecorder.release();
+//        mRecorder = null;
+    }
+
 	private MsgRcvListener m = new MsgRcvListener(){
 
 		public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
@@ -125,24 +177,28 @@ public class MsgActivity extends Activity {
 			}
 			mHandler.sendMessage(new Message());
 		}
-		
+
 	};
-	
+
 	@Override
 	public void onDestroy(){
 		app.removeMsgRcvListener(m);
 		app.setTalkingToId(null);
 		//app.saveAllMsg(messages);
+		if(mRecorder != null)
+			mRecorder.release();
+		if(mPlayer != null)
+			mPlayer.release();
 		super.onDestroy();
 	}
-	
+
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			chatHistoryAdapter.notifyDataSetChanged();
 		}
 	};
-	
+
 	// …Ë÷√adapter
 	private void setAdapterForThis() {
 		List<ChatMessage> tmp = app.getAllMsg(friendUID);
