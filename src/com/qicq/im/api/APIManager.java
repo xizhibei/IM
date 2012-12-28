@@ -241,7 +241,7 @@ public class APIManager extends WebManager{
 	public int SendMessage(ChatMessage msg){
 		String tmp;
 		try {
-			tmp = "rcvId="+msg.targetId+"&content=" + URLEncoder.encode(msg.content,"UTF-8");
+			tmp = "type=" + msg.type + "&audiotime=" + msg.audioTime + "&rcvId="+msg.targetId+"&content=" + URLEncoder.encode(msg.content,"UTF-8");
 			tmp = PostData(addr + "/msg/send", tmp);
 			if(tmp != null){
 				Log.v("SendMessage Recive data",tmp);
@@ -279,7 +279,8 @@ public class APIManager extends WebManager{
 								p.getString("content"),
 								p.getString("sendid"),
 								p.getInt("type"),
-								p.getInt("time"))
+								p.getInt("time"),
+								0)//TODO audio time
 								);
 					}
 				}
@@ -327,16 +328,21 @@ public class APIManager extends WebManager{
 		return list;
 	}
 
+	/**
+	 * 
+	 * @param filename
+	 * @return the fid in server
+	 */
 	public int UploadFile(String filename){
 		String contentType;
 		if(filename.endsWith("png")){
 			contentType = "image/png";
-		}
-		else if(filename.endsWith("jpg")){
+		}else if(filename.endsWith("jpg")){
 			contentType = "image/jpg";
-		}
-		else if(filename.endsWith("gif")){
+		}else if(filename.endsWith("gif")){
 			contentType = "image/gif";
+		}else if(filename.endsWith("amr")){
+			contentType = "audio/amr";
 		}else
 			return ERROR_ARG;
 
@@ -346,8 +352,12 @@ public class APIManager extends WebManager{
 			Log.v("UploadFile Recive data",tmp);
 			JSONObject json;
 			try {
+				
 				json = new JSONObject(tmp);
-				return json.getInt("errno");
+				if(json.getInt("errno") == 0)
+					return json.getInt("fid");
+				else
+					return ERROR_NO_DATA;
 			} catch (JSONException e) {
 				e.printStackTrace();
 				return ERROR_IN_JSON;

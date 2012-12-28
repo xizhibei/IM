@@ -26,8 +26,10 @@ public class ChatListModel extends AbstractModel {
 			cv.put("content", m.msg.content);
 			cv.put("type", m.msg.type);
 			cv.put("direction", m.msg.direction);
+			cv.put("audiotime", m.msg.audioTime);
 			cv.put("count", m.unreadCount);
-
+			
+			
 			Cursor c = db.rawQuery("select * from " + tableName + " where targetid = " + m.msg.targetId, null);
 			if(c.moveToNext()){
 				int ret = db.update(tableName, cv,"targetid = " + m.msg.targetId,null);
@@ -53,6 +55,7 @@ public class ChatListModel extends AbstractModel {
 			cv.put("content", m.content);
 			cv.put("type", m.type);
 			cv.put("direction", m.direction);
+			cv.put("audiotime", m.audioTime);
 			cv.put("count", count);
 
 			if(count == 1){
@@ -87,11 +90,13 @@ public class ChatListModel extends AbstractModel {
 		while (c.moveToNext()) {// int direction, String content,String
 			// targetId,boolean isStored
 			msgs.add(ChatListItem.fromDatabase(ChatMessage.fromDatabase(
+					c.getInt(0),
 					c.getInt(1), 
 					c.getString(2),
 					c.getString(3), 
 					c.getInt(4), 
-					c.getInt(5)
+					c.getInt(5),
+					c.getInt(6)
 					),new User(c.getInt(Idx_type),
 							c.getInt(Idx_uid), 
 							c.getString(Idx_name), 

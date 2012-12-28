@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.qicq.im.app.LBSApp;
+import com.qicq.im.config.SysConfig;
+
 import android.app.ListActivity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -21,7 +23,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ConfigActivity extends ListActivity{
 
-	private static final String IMAGE_CAPTURE_PATH = "/mnt/sdcard/QICQ/camer/";
 	LBSApp app;
 	//ListView configLV = null;
 	public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class ConfigActivity extends ListActivity{
 					startActivityForResult(i, 1);
 				}else if(position == 3){
 					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					File file = new File(IMAGE_CAPTURE_PATH);
+					File file = new File(SysConfig.IMAGE_CAPTURE_PATH);
 					if(!file.exists())
 						file.mkdirs();
 					intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(file, "tmp.jpg") ));
@@ -93,7 +94,7 @@ public class ConfigActivity extends ListActivity{
 			Intent data) {
 		super.onActivityResult(requestCode, resultCode, data); 
 		if(resultCode == RESULT_OK){
-			String path = IMAGE_CAPTURE_PATH + "tmp.jpg";
+			String path = SysConfig.IMAGE_CAPTURE_PATH + "tmp.jpg";
 			Uri out = Uri.fromFile(new File(path));
 			if(requestCode == 1){				
 				startPhotoZoom(out,out);

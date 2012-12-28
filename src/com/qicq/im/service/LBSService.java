@@ -6,9 +6,11 @@ import com.qicq.im.R;
 import com.qicq.im.api.APIManager;
 import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.User;
+import com.qicq.im.config.SysConfig;
 import com.qicq.im.config.UserConfig;
 import com.qicq.im.db.ChatListModel;
 import com.qicq.im.db.MsgModel;
+import com.qicq.im.db.MsgSendTaskModel;
 import com.qicq.im.db.UserModel;
 import com.qicq.im.msg.MsgRcvEvent;
 import com.qicq.im.msg.MsgRcvListener;
@@ -54,6 +56,7 @@ public class LBSService extends Service {
 	public UserModel userModel;
 	public MsgModel msgModel;
 	public ChatListModel chatListModel;
+	public MsgSendTaskModel msgSendTaskModel;
 
 	public class LBSBinder extends Binder {
 		public LBSService getService() {
@@ -84,21 +87,11 @@ public class LBSService extends Service {
 		if(uid != null && !isDatabaseOpened())
 			initDatabase(userConfig.getUid());
 
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-		return binder;
-	}
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Log.v("Service","onCreate");
-		api = new APIManager(getResources().getString(R.string.HOSTADDR));
-
+		
+		sendMsgThread = new SendMessageThread(api,this,msgSendTaskModel);
+		networkMonitorThread = new NetworkMonitorThread(this);	
 		rcvMsgThread = new RcvMessageThread(api);
-		sendMsgThread = new SendMessageThread(api);
-		networkMonitorThread = new NetworkMonitorThread(this);
-
+		
 		rcvMsgThread.addMsgRcvListener(new MsgRcvListener() {
 
 			public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
@@ -135,17 +128,30 @@ public class LBSService extends Service {
 
 		});
 		networkMonitorThread.start();
+		
+		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+		return binder;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Log.v("Service","onCreate");
+		api = new APIManager(SysConfig.API_SERVER_ADDR);
+		
+		
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		Log.v("Service","onStart");
+		Log.v("Service","onStart" + startId);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-		Log.v("Service","onStartCommand");
+		Log.v("Service","onStartCommand"+startId);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -157,6 +163,7 @@ public class LBSService extends Service {
 		userModel = new UserModel(this,uid);
 		msgModel = new MsgModel(this,uid);
 		chatListModel = new ChatListModel(this,uid);
+		msgSendTaskModel = new MsgSendTaskModel(this,uid);
 	}
 
 	public void closeDatabase(){
@@ -180,9 +187,10 @@ public class LBSService extends Service {
 		return binder;
 	}
 
-	public void sendMessage(ChatMessage msg){
-		sendMsgThread.addMsgs(msg);
-	}
+//	public void sendMessage(ChatMessage msg){
+////		sendMsgThread.addMsgs(msg);
+//		msgSendTaskModel.insert(msg);
+//	}
 
 	public void showNotification(int icon, String tickertext, String title,
 			String content) {

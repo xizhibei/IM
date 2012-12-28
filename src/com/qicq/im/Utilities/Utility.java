@@ -1,5 +1,9 @@
 package com.qicq.im.Utilities;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 
 import android.app.ActivityManager;
@@ -7,6 +11,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Base64;
 import android.util.Log;
 
 public class Utility {
@@ -47,5 +52,26 @@ public class Utility {
 			}  
 		}  
 		return false;  
+	}
+	
+	public static String getMD5(String str){
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("MD5");
+			byte[] b = str.getBytes("UTF8");  
+	        byte[] hash = md.digest(b);  
+	        String pwd = Base64.encodeToString( hash,Base64.CRLF);
+	        return pwd;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}  
+        return null;
+	}
+	
+	public static String getRandomFileName(){
+		Date date = new Date();
+		return String.valueOf(date.getTime());
 	}
 }

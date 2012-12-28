@@ -17,6 +17,14 @@
     	android:paddingTop="10dip"
     	android:textSize="20sp"
     />
+
+  	<TextView
+  	    android:id="@+id/recorder_ring_time"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:text="0"
+  	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
   	<FrameLayout
   		android:layout_gravity="center_vertical|center_horizontal"
   		android:layout_width="wrap_content" 

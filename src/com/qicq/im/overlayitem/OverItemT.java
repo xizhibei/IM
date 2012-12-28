@@ -10,8 +10,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,19 +17,14 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.baidu.mapapi.GeoPoint;
 import com.baidu.mapapi.ItemizedOverlay;
 import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.Projection;
-import com.qicq.im.PublishActivity;
 import com.qicq.im.R;
 import com.qicq.im.WantDetailActivity;
 import com.qicq.im.api.User;
 import com.qicq.im.app.LBSApp;
-import com.qicq.im.popwin.LBSToast;
-import com.qicq.im.popwin.NearbyOptionPopupWindow;
 
 public class OverItemT extends ItemizedOverlay<AbstaractOverlayItem> {
 

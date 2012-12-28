@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Vector;
 
+import com.qicq.im.config.SysConfig;
 import com.qicq.im.service.NetworkStateListener;
 
-import com.qicq.im.R;
 import android.content.Context;
 import android.util.Log;
 
@@ -21,7 +21,7 @@ public class NetworkMonitorThread extends Thread{
 
 	public NetworkMonitorThread(Context context){
 		//this.context = context;
-		addr = context.getResources().getString(R.string.HOSTADDR);
+		addr = SysConfig.API_SERVER_ADDR;
 		addr = addr.substring(7);
 	}
 

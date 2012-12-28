@@ -2,6 +2,9 @@ package com.qicq.im.api;
 
 import java.util.Date;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class ChatMessage {
 
 	public static final int MESSAGE_FROM = 0;
@@ -13,6 +16,7 @@ public class ChatMessage {
 	public static final int MESSAGE_TYPE_VOICE = 3;
 	public static final int MESSAGE_TYPE_REQUEST = 4;
 
+	public int mid;
 	public int direction;
 	public String content;//if type is image or audio, content is filename/path
 	public String targetId;
@@ -28,19 +32,20 @@ public class ChatMessage {
 		
 	}
 	
-	public static ChatMessage fromReciver(String content,String targetId,int type,int time){
+	public static ChatMessage fromReciver(String content,String targetId,int type,int time,int audiotime){
 		ChatMessage msg = new ChatMessage();
 		msg.direction = MESSAGE_FROM;
 		msg.content = content;
 		msg.targetId = targetId;
 		msg.time = time;
 		msg.isReaded = false;
+		msg.audioTime = audiotime;
 		return msg;
 	}
 	
 	public static ChatMessage fromSender(int type,String content,String targetId){
 		ChatMessage msg = new ChatMessage();
-		msg.direction = MESSAGE_FROM;
+		msg.direction = MESSAGE_TO;
 		msg.type = type;
 		msg.content = content;
 		msg.targetId = targetId;
@@ -49,14 +54,16 @@ public class ChatMessage {
 		return msg;
 	}
 	
-	public static ChatMessage fromDatabase(int direction, String content,String targetId,int type,int time){
+	public static ChatMessage fromDatabase(int mid,int direction, String content,String targetId,int type,int time,int audiotime){
 		ChatMessage msg = new ChatMessage();
+		msg.mid = mid;
 		msg.direction = direction;
 		msg.content = content;
 		msg.targetId = targetId;
 		msg.type = type;
 		msg.time = time;
 		msg.isStored = true;
+		msg.audioTime = audiotime;
 		return msg;
 	}
 	
@@ -64,5 +71,10 @@ public class ChatMessage {
 		Date date = new Date();
 		date.setTime(time);
 		return date.toLocaleString();
+	}
+	
+	public Bitmap getBitmap(){
+		Bitmap tmp = BitmapFactory.decodeFile(content);
+		return Bitmap.createBitmap(tmp, 0, 0, 200, 200);
 	}
 }

@@ -78,7 +78,7 @@ public class LBSApp extends Application{
 		}  
 
 		public void onServiceDisconnected(ComponentName name) {
-			Log.v("LBSApp", "Service Disconnected!!!");
+			Log.e("LBSApp", "Service Disconnected!!!");
 		}
 	};
 
@@ -247,9 +247,18 @@ public class LBSApp extends Application{
 		return api.LocationUpdate(lat, lng);
 	}
 
-	public void sendMessage(ChatMessage msg){
-		service.sendMsgThread.addMsgs(msg);
+	/**
+	 * 
+	 * @param msg
+	 * @return the msg id in database
+	 */
+	public int sendMessage(ChatMessage msg){
+		int id = service.msgModel.insert(msg);
+		msg.mid = id;
+//		service.sendMsgThread.addMsgs(msg);
+		service.msgSendTaskModel.insert(msg);
 		service.rcvMsgThread.setSleepTime(RcvMessageThread.MIN_TIME);
+		return id;
 	}
 
 	public void addMsgRcvListener(MsgRcvListener l){

@@ -21,15 +21,25 @@ public class MsgModel extends AbstractModel{
 		for(ChatMessage m : msgs){
 			if(m.isStored)
 				continue;
-			ContentValues cv = new ContentValues();        
-			cv.put("targetid",m.targetId);
-			cv.put("time",m.time);
-			cv.put("content",m.content);
-			cv.put("type",m.type);
-			cv.put("direction",m.direction);
-			
-			db.insert(tableName, null,cv);
+			insert(m);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param m message
+	 * @return the id in the table 'msg'
+	 */
+	public int insert(ChatMessage m){
+		ContentValues cv = new ContentValues();        
+		cv.put("targetid",m.targetId);
+		cv.put("time",m.time);
+		cv.put("content",m.content);
+		cv.put("type",m.type);
+		cv.put("direction",m.direction);
+		cv.put("audiotime",m.audioTime);
+		
+		return (int) db.insert(tableName, null,cv);
 	}
 
 	public List<ChatMessage> fetchAll(String targetId){
@@ -37,11 +47,13 @@ public class MsgModel extends AbstractModel{
 		List<ChatMessage> msgs = new ArrayList<ChatMessage>();
 		while(c.moveToNext()){//int direction, String content,String targetId,boolean isStored
 			msgs.add(ChatMessage.fromDatabase(
+					c.getInt(0),
 					c.getInt(1),
 					c.getString(2),
 					c.getString(3),
 					c.getInt(4),
-					c.getInt(5)));
+					c.getInt(5),
+					c.getInt(6)));
 		}
 		c.close();
 		Log.v("MsgModel","get msg size" + msgs.size() + " with uid " + targetId);
