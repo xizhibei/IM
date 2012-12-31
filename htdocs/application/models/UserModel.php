@@ -17,7 +17,7 @@ class UserModel extends Zend_Db_Table_Abstract {
     protected $_primary = 'uid';
 
     public function GetUser($uid) {
-        $p = $this->_db->fetchRow("select * from user where user.uid = $uid");
+        $p = $this->_db->fetchRow("select * from user left join location on user.lid = location.lid and user.uid = $uid");
         if (!isset($p['uid']))
             return null;
         if ($p ['sex'] == 0) {
@@ -40,9 +40,9 @@ class UserModel extends Zend_Db_Table_Abstract {
         return $p;
     }
 
-    public function GetUserLoc($uid) {
-        return $this->_db->fetchRow("select latitude,longitude from user where uid = " . $uid);
-    }
+//    public function GetUserLoc($uid) {
+//        return $this->_db->fetchRow("select latitude,longitude from user,location where user.lid = location.uid and uid = " . $uid);
+//    }
 
     public function EmailExist($email) {
         $where = $this->_db->quoteInto("email = ?", $email);

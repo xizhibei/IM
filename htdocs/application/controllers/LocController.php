@@ -65,7 +65,7 @@ class LocController extends Zend_Controller_Action {
             }
             $response['count'] = count($response);
             $response['errno'] = 0;
-        }else{
+        }else {
             $response['errno'] = 1;
         }
         echo json_encode($response);
@@ -77,25 +77,47 @@ class LocController extends Zend_Controller_Action {
         $f = new FileModel();
         $friend = new FriendModel();
 
-        $data = $loc->getAdapter()->fetchRow("select * from user where uid = " . $this->user ['uid']);
+        $data = $loc->GetNewestLocation($this->user ['uid']);
         if ($data != null) {
             $response ['errno'] = 0;
             $people = $loc->NearbyPeople($this->user ['uid'], $data ['latitude'], $data ['longitude']);
             $response ['count'] = count($people);
             foreach ($people as $p) {
-                array_push($response, array(
-                    'uid' => $p ['uid'],
-                    'type' => $friend->getFriendType($this->user['uid'], $p ['uid']),
-                    'name' => $p ['name'],
-                    'sex' => $p ['sex'],
-                    'age' => $p['age'],
-                    'regdate' => $p ['regdate'],
-                    'locupdate' => $p ['updatetime'],
-                    'lat' => $p ['latitude'],
-                    'lng' => $p ['longitude'],
-                    'avatar' => $f->getAvatar($p['avatarid']),
-                    'distance' => $p['distance'],
-                ));
+                if ($p['wantid'] != 0) {
+                    array_push($response, array(
+                        'uid' => $p ['uid'],
+                        'type' => $friend->getFriendType($this->user['uid'], $p ['uid']),
+                        'name' => $p ['name'],
+                        'sex' => $p ['sex'],
+                        'age' => $p['age'],
+                        'regdate' => $p ['regdate'],
+                        'locupdate' => $p ['locupdatetime'],
+                        'lat' => $p ['latitude'],
+                        'lng' => $p ['longitude'],
+                        'avatar' => $f->getAvatar($p['avatarid']),
+                        'distance' => $p['distance'],                   
+                        'a_name' => $p['a_name'],
+                        'expiretime' => $p['expiretime'],
+                        'starttime' => $p['starttime'],
+                        'sextype' => $p['sextype'],
+                        'd_updatetime' => $p['d_updatetime'],
+                        'detail' => $p['d_detail'],
+                    ));
+                } else {
+                    array_push($response, array(
+                        'uid' => $p ['uid'],
+                        'type' => $friend->getFriendType($this->user['uid'], $p ['uid']),
+                        'name' => $p ['name'],
+                        'sex' => $p ['sex'],
+                        'age' => $p['age'],
+                        'regdate' => $p ['regdate'],
+                        'locupdate' => $p ['locupdatetime'],
+                        'lat' => $p ['latitude'],
+                        'lng' => $p ['longitude'],
+                        'avatar' => $f->getAvatar($p['avatarid']),
+                        'distance' => $p['distance'],
+                    ));
+                }
             }
         } else {
             $response ['errno'] = 1;

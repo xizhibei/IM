@@ -29,35 +29,41 @@ class UserController extends Zend_Controller_Action {
 // 		foreach($result as $r){
 // 			$user->update(array('pwd'=>md5($r['name'].$r['salt'])), "uid = " . $r['uid']);
 // 		}
-        $user = new UserModel ();
+//        $user = new UserModel ();
 //        $result = $user->getAdapter()->fetchAll("select * from location group by uid having max(updatetime)");
 //        foreach ($result as $r) {
 //            $user->update(array(
-//                'latitude' => $r['latitude'],
-//                'longitude' => $r['longitude'],
-//                'locupdatetime' => $r['updatetime'],
+//                'lid' => $r['lid'],
 //                    ), "uid = " . $r['uid']);
 //        }
-        $result = $user->getAdapter()->fetchAll("select uid from user");
-        $time = new Zend_Date();
-        $time->setHour(0);
-        $time->setMinute(0);
-        $time->setSecond(0);
+        
+        $user = new UserModel ();
+        $result = $user->getAdapter()->fetchAll("select * from want group by uid having max(d_updatetime)");
         foreach ($result as $r) {
-            $time->setYear(1990 + rand(-20, 20));
-            $time->setMonth(rand(1,12));
-            $time->setDay(rand(1, 28));    
             $user->update(array(
-                'birthday' => $time->toValue()
+                'wantid' => $r['did'],
                     ), "uid = " . $r['uid']);
         }
-        $result = $user->getAdapter()->fetchAll("select birthday from user limit 0,30");
-        $time = new Zend_Date();
-
-        foreach ($result as $r) {
-            $time->set($r['birthday']);
-            echo $time->toString() . "<br>";
-        }
+//        $result = $user->getAdapter()->fetchAll("select uid from user");
+//        $time = new Zend_Date();
+//        $time->setHour(0);
+//        $time->setMinute(0);
+//        $time->setSecond(0);
+//        foreach ($result as $r) {
+//            $time->setYear(1990 + rand(-20, 20));
+//            $time->setMonth(rand(1,12));
+//            $time->setDay(rand(1, 28));    
+//            $user->update(array(
+//                'birthday' => $time->toValue()
+//                    ), "uid = " . $r['uid']);
+//        }
+//        $result = $user->getAdapter()->fetchAll("select birthday from user limit 0,30");
+//        $time = new Zend_Date();
+//
+//        foreach ($result as $r) {
+//            $time->set($r['birthday']);
+//            echo $time->toString() . "<br>";
+//        }
     }
 
     public function infoAction() {

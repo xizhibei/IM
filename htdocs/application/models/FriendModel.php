@@ -10,7 +10,7 @@ require_once 'Zend/Db/Table/Abstract.php';
 
 class FriendModel extends Zend_Db_Table_Abstract {
 
-    const NONE = 8;
+    const NONE = 16;
     const Me = 0;
     const BeFollowed = 1;
     const Fans = 2;
@@ -87,7 +87,11 @@ class FriendModel extends Zend_Db_Table_Abstract {
     }
 
     public function GetAllMy($uid) {
-        $result = $this->_db->fetchAll("select * from user,friend where (uid = uid1 and uid2 = $uid or uid = uid2 and uid1 = $uid) and friend.status >= 1 and friend.status <= 3");
+        $result = $this->_db->fetchAll("select * from user inner join friend on 
+            (uid = uid1 and uid2 = $uid or uid = uid2  and uid1 = $uid) and friend.status >= 1 and friend.status <= 3
+            left join location on user.lid = location.lid 
+            left join want on user.wantid = want.did 
+            left join activity on want.acid = activity.aid");
         $now = time();
         foreach ($result as &$p) {
             if ($p ['sex'] == 0) {
@@ -97,21 +101,18 @@ class FriendModel extends Zend_Db_Table_Abstract {
             } else
                 $p ['sex'] = "Female";
 
-            $tmp = $this->_db->fetchRow("select *,max(updatetime) from location where uid = " . $p ['uid']);
-            if (!isset($tmp['updatetime'])) {
+            if ($p['lid'] == 0) {
                 $p ['latitude'] = - 1;
                 $p ['longitude'] = - 1;
                 $p ['updatetime'] = 0;
             } else {
-                $p ['latitude'] = $tmp ['latitude'];
-                $p ['longitude'] = $tmp ['longitude'];
-                $h = $now - $tmp ['updatetime'];
+                $h = $now - $p ['locupdatetime'];
                 if ($h / 86400 >= 1)
-                    $p ['updatetime'] = intval($h / 86400) . "天前";
+                    $p ['locupdatetime'] = intval($h / 86400) . "天前";
                 else if ($h / 3600 >= 1)
-                    $p ['updatetime'] = intval($h / 3600) . "小时前";
+                    $p ['locupdatetime'] = intval($h / 3600) . "小时前";
                 else
-                    $p ['updatetime'] = intval($h / 60) . "分钟前";
+                    $p ['locupdatetime'] = intval($h / 60) . "分钟前";
             }
             $p ['regdate'] = date("Y-m-d", $p ['regdate']);
             $p ['age'] = intval((time() - $p['birthday']) / (365.25 * 86400));
@@ -127,6 +128,16 @@ class FriendModel extends Zend_Db_Table_Abstract {
                     $p['type'] = FriendModel::BeFollowed;
             }else
                 $p['type'] = FriendModel::Friend;
+            
+            if ($p['wantid'] != 0) {
+                $h = time() - $p ['d_updatetime'];
+                if ($h / 86400 >= 1)
+                    $p ['d_updatetime'] = intval($h / 86400) . "天前";
+                else if ($h / 3600 >= 1)
+                    $p ['d_updatetime'] = intval($h / 3600) . "小时前";
+                else
+                    $p ['d_updatetime'] = intval($h / 60) . "分钟前";
+            }
         }
         return $result;
     }

@@ -29,9 +29,9 @@ class FriendController extends Zend_Controller_Action {
         $f = new FileModel();
         $l = new LocModel();
         $user = new UserModel();
-        
-        $loc = $user->GetUserLoc($this->user['uid']);
-        
+
+        $loc = $l->GetNewestLocation($this->user['uid']);
+
         $result = $friend->GetAllMy($this->user ['uid']);
         if ($result != null) {
             $count = 0;
@@ -40,24 +40,47 @@ class FriendController extends Zend_Controller_Action {
                     $uid = $r ['uid2'];
                 else
                     $uid = $r ['uid1'];
-                
-                if($loc['latitude'] == 0 && $loc['longtitude'] == 0)
+
+                if ($loc['latitude'] == 0 && $loc['longtitude'] == 0)
                     $dis = -1;
                 else
                     $dis = $l->GetDistance($loc['latitude'] / 1e6, $loc['longitude'] / 1e6, $r ['latitude'] / 1e6, $r ['longitude'] / 1e6);
-                array_push($response, array(
-                    'uid' => $uid,
-                    'type' => $r['type'],
-                    'name' => $r ['name'],
-                    'sex' => $r ['sex'],
-                    'age' => $r['age'],
-                    'regdate' => $r ['regdate'],
-                    'locupdate' => $r ['updatetime'],
-                    'lat' => $r ['latitude'],
-                    'lng' => $r ['longitude'],
-                    'avatar' => $f->getAvatar($r['avatarid']),
-                    'distance' => $dis,
-                ));
+
+                if ($r['wantid'] == 0) {
+                    array_push($response, array(
+                        'uid' => $uid,
+                        'type' => $r['type'],
+                        'name' => $r ['name'],
+                        'sex' => $r ['sex'],
+                        'age' => $r['age'],
+                        'regdate' => $r ['regdate'],
+                        'locupdate' => $r ['locupdatetime'],
+                        'lat' => $r ['latitude'],
+                        'lng' => $r ['longitude'],
+                        'avatar' => $f->getAvatar($r['avatarid']),
+                        'distance' => $dis,
+                    ));
+                } else {
+                    array_push($response, array(
+                        'uid' => $uid,
+                        'type' => $r['type'],
+                        'name' => $r ['name'],
+                        'sex' => $r ['sex'],
+                        'age' => $r['age'],
+                        'regdate' => $r ['regdate'],
+                        'locupdate' => $r ['locupdatetime'],
+                        'lat' => $r ['latitude'],
+                        'lng' => $r ['longitude'],
+                        'avatar' => $f->getAvatar($r['avatarid']),
+                        'distance' => $dis,
+                        'a_name' => $r['a_name'],
+                        'expiretime' => $r['expiretime'],
+                        'starttime' => $r['starttime'],
+                        'sextype' => $r['sextype'],
+                        'd_updatetime' => $r['d_updatetime'],
+                        'detail' => $r['d_detail'],
+                    ));
+                }
                 $count++;
             }
             $response ['errno'] = 0;

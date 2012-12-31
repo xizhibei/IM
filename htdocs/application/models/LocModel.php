@@ -134,7 +134,7 @@ class LocModel extends Zend_Db_Table_Abstract {
                 $tmp .= " locupdatetime > " . (time() - 43200);
             } else if ($updatetime == "1d") {
                 $tmp .= " locupdatetime > " . (time() - 86400);
-            }else{
+            } else {
                 $tmp .= " locupdatetime <> 0 ";
             }
         } else {
@@ -148,14 +148,14 @@ class LocModel extends Zend_Db_Table_Abstract {
         }
         //echo $where;
         $data = $this->_db->fetchAll("select latitude as lat,longitude as lng,uid from user where $where");
-        if(count($data) == 0)
+        if (count($data) == 0)
             return null;
         foreach ($data as &$d) {
             $d['lat'] = $d['lat'] / 1e6;
             $d['lng'] = $d['lng'] / 1e6;
         }
         //var_dump($data);
-        
+
         return ( $this->kmeans($data, $num) );
     }
 
@@ -188,23 +188,21 @@ class LocModel extends Zend_Db_Table_Abstract {
     }
 
     public function GetNewestLocation($uid) {
-        $result = $this->_db->fetchRow("select * from location where uid = $uid order by updatetime desc limit 0,1");
+        $result = $this->_db->fetchRow("select latitude,longitude from user,location where user.uid = $uid and user.lid = location.lid");
         return $result;
     }
 
     public function UpdateNewLocation($uid, $latitude, $longitude) {
         $time = time();
-        $insertData = array(
+        $id = $insertData = array(
             'latitude' => $latitude,
             'longitude' => $longitude,
-            'updatetime' => $time,
+            'locupdatetime' => $time,
             'uid' => $uid
         );
         $this->insert($insertData);
         $this->_db->update("user", array(
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'locupdatetime' => $time
+            'lid' => $id
                 ), "uid = $uid");
     }
 
@@ -235,7 +233,10 @@ class LocModel extends Zend_Db_Table_Abstract {
         // 10e6,$squre['rb']['lng'] / 10e6);
         // var_dump($squre);
 
-        $sql = "select * from user where {$squre['lt']['lat']} > latitude and 
+        $sql = "select * from (user left join want on user.wantid = want.did) 
+        left join location on user.lid = location.lid
+        left join activity on want.acid = activity.aid
+        where {$squre['lt']['lat']} > latitude and 
         {$squre['lt']['lng']} < longitude and {$squre['rb']['lat']} < latitude and 
         {$squre['rb']['lng']} > longitude";
 
@@ -250,15 +251,25 @@ class LocModel extends Zend_Db_Table_Abstract {
 
             $h = time() - $p ['locupdatetime'];
             if ($h / 86400 >= 1)
-                $p ['updatetime'] = intval($h / 86400) . "天前";
+                $p ['locupdatetime'] = intval($h / 86400) . "天前";
             else if ($h / 3600 >= 1)
-                $p ['updatetime'] = intval($h / 3600) . "小时前";
+                $p ['locupdatetime'] = intval($h / 3600) . "小时前";
             else
-                $p ['updatetime'] = intval($h / 60) . "分钟前";
+                $p ['locupdatetime'] = intval($h / 60) . "分钟前";
+
+            if ($p['wantid'] != 0) {
+                $h = time() - $p ['d_updatetime'];
+                if ($h / 86400 >= 1)
+                    $p ['d_updatetime'] = intval($h / 86400) . "天前";
+                else if ($h / 3600 >= 1)
+                    $p ['d_updatetime'] = intval($h / 3600) . "小时前";
+                else
+                    $p ['d_updatetime'] = intval($h / 60) . "分钟前";
+            }
 
             $p ['regdate'] = date("Y-m-d", $p ['regdate']);
             $p ['age'] = intval((time() - $p['birthday']) / (365.25 * 86400));
-            $p ['distance'] = $this->GetDistance($latitude / 1e6,$longitude /1e6,$p['latitude'] / 1e6,$p['longitude'] / 1e6);
+            $p ['distance'] = $this->GetDistance($latitude / 1e6, $longitude / 1e6, $p['latitude'] / 1e6, $p['longitude'] / 1e6);
         }
         return $result;
     }
