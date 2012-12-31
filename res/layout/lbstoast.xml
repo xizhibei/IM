@@ -3,11 +3,11 @@
     android:id="@+id/toast_root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
+    android:background="@drawable/bg_common_popwindow"
     android:gravity="center"
     android:orientation="horizontal" >
 
-    <ImageView
+    <!-- <ImageView
         android:id="@+id/toast_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,6 +19,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" /> -->
+    <TextView android:textSize="14.0sp" 
+        android:textColor="@color/black" 
+        android:gravity="left|center" 
+        android:layout_gravity="center_vertical" 
+        android:id="@+id/toast_content" 
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content" 
+        android:shadowColor="@color/white" 
+        android:shadowDx="1.0" 
+        android:shadowDy="1.0" />
 
 </LinearLayout>

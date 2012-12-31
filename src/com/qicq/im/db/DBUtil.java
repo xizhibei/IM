@@ -3,27 +3,88 @@ package com.qicq.im.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.User;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-public class UserModel extends AbstractModel{
-	public UserModel(Context context, String uid) {
-		super(context, uid);
-		
-		tableName = "user";
+public class DBUtil {
+	protected static DBHelper helper = null;
+	protected static SQLiteDatabase db = null;
+	public DBUtil(Context context,String uid){
+		if(helper == null){
+			helper = new DBHelper(context,uid + ".db");
+			db = helper.getWritableDatabase();
+		}
+	}
+
+	public String fetchOne(String sql){
+		Cursor c = db.rawQuery(sql, null);
+		if(c.moveToNext()){
+			c.close();
+			return c.getString(0);
+		}
+		else{
+			c.close();
+			return null;
+		}
 	}
 	
-	public void updateAll(List<User> users){
+	public void insertAllMsg(List<ChatMessage> msgs){
+		for(ChatMessage m : msgs){
+			if(m.isStored)
+				continue;
+			insertMsg(m);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param m message
+	 * @return the id in the table 'msg'
+	 */
+	public int insertMsg(ChatMessage m){
+		ContentValues cv = new ContentValues();        
+		cv.put("targetid",m.targetId);
+		cv.put("time",m.time);
+		cv.put("content",m.content);
+		cv.put("type",m.type);
+		cv.put("direction",m.direction);
+		cv.put("audiotime",m.audioTime);
+		
+		return (int) db.insert("msg", null,cv);
+	}
+
+	public List<ChatMessage> fetchAllMsg(String targetId){
+		Cursor c = db.rawQuery("select * from msg where targetid = " + targetId + " order by time desc", null);
+		List<ChatMessage> msgs = new ArrayList<ChatMessage>();
+		while(c.moveToNext()){//int direction, String content,String targetId,boolean isStored
+			msgs.add(ChatMessage.fromDatabase(
+					c.getInt(0),
+					c.getInt(1),
+					c.getString(2),
+					c.getString(3),
+					c.getInt(4),
+					c.getInt(5),
+					c.getInt(6),
+					c.getInt(7)));
+		}
+		c.close();
+		Log.v("MsgModel","get msg size" + msgs.size() + " with uid " + targetId);
+		return msgs;
+	}
+	
+	public void updateAllUser(List<User> users){
 		for(User u : users){
 			updateUser(u);
 		}
 	}
 	
-	public List<User> fetchAll(String sql){
+	public List<User> fetchAllUser(String sql){
 		Cursor c = db.rawQuery(sql, null);		
 		List<User> users = new ArrayList<User>();
 		
@@ -61,19 +122,19 @@ public class UserModel extends AbstractModel{
 	}
 	
 	public List<User> fetchAllFans(){
-		return fetchAll("select * from " + tableName + " where type & " + User.USER_TYPE_FANS + " <> 0");
+		return fetchAllUser("select * from user where type & " + User.USER_TYPE_FANS + " <> 0");
 	}
 	
 	public List<User> fetchAllFollowed(){
-		return fetchAll("select * from " + tableName + " where type & " + User.USER_TYPE_BEFOLLOWED + " <> 0");
+		return fetchAllUser("select * from user where type & " + User.USER_TYPE_BEFOLLOWED + " <> 0");
 	}
 	
 	public List<User> fetchAllFriends(){
-		return fetchAll("select * from " + tableName + " where type & " + User.USER_TYPE_FRIEND  + " = " + User.USER_TYPE_FRIEND);
+		return fetchAllUser("select * from user where type & " + User.USER_TYPE_FRIEND  + " = " + User.USER_TYPE_FRIEND);
 	}
 	
 	public List<User> fetchAllNearby(){
-		return fetchAll("select * from " + tableName + " where type &" + User.USER_TYPE_NEARBY  + " = " + User.USER_TYPE_NEARBY);
+		return fetchAllUser("select * from user where type = " + User.USER_TYPE_NEARBY);
 	}
 	
 	public void updateUser(User u){
@@ -90,20 +151,20 @@ public class UserModel extends AbstractModel{
         cv.put("lng",u.lng);
         cv.put("distance",u.distance);
         
-		Cursor c = db.rawQuery("select * from " + tableName + " where uid = " + u.uid,null);
+		Cursor c = db.rawQuery("select * from user where uid = " + u.uid,null);
 		if(!c.moveToNext()){
 			cv.put("uid", u.uid);
-			long ret = db.insert(tableName, null,cv);
+			long ret = db.insert("user", null,cv);
 			Log.v("UserModel","Insert return " + ret);
 		}else{
-			int ret = db.update(tableName, cv, "uid = " + u.uid, null);
+			int ret = db.update("user", cv, "uid = " + u.uid, null);
 			Log.v("UserModel","Update affected return " + ret);
 		}
 		c.close();
 	}
 	
 	public User getUser(String uid){
-		Cursor c = db.rawQuery("select * from " + tableName + " where uid = " + uid, null);
+		Cursor c = db.rawQuery("select * from user where uid = " + uid, null);
 		if(!c.moveToNext()){
 			c.close();
 			Log.v("UserModel","Fail to get user " + uid);
@@ -139,5 +200,4 @@ public class UserModel extends AbstractModel{
 		c.close();
 		return u;
 	}
-
 }

@@ -8,7 +8,7 @@ public class DBHelper extends SQLiteOpenHelper{
 	
 	private static final int Version = 1;
 	private static final String CreateMsgTable = 
-			"CREATE TABLE IF NOT EXISTS msg (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer )";
+			"CREATE TABLE IF NOT EXISTS msg (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer,`sendstate` integer)";
 	private static final String CreateUserTable = 
 			"CREATE TABLE IF NOT EXISTS user " +
 			"(`uid` integer PRIMARY KEY AUTOINCREMENT," +
@@ -28,10 +28,13 @@ public class DBHelper extends SQLiteOpenHelper{
 			"CREATE TABLE IF NOT EXISTS cluster (`cid` integer PRIMARY KEY AUTOINCREMENT,`latitude` integer ,`longtitude` integer ,`radix` integer )";
 	
 	private static final String CreateChatListTable = 
-			"CREATE TABLE IF NOT EXISTS chatlist (`id` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer ,`count` integer )";
+			"CREATE TABLE IF NOT EXISTS chatlist (`id` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer,`sendstate` integer ,`count` integer )";
 	
 	private static final String CreateSendTaskTable = 
-			"CREATE TABLE IF NOT EXISTS msgsendtask (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer )";
+			"CREATE TABLE IF NOT EXISTS msgsendtask (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer,`sendstate` integer )";
+	
+	private static final String CreateDemandTable = 
+			"CREATE TABLE IF NOT EXISTS demand (`did` integer PRIMARY KEY AUTOINCREMENT,`name` text, `startH` integer,`startM` integer,`endH` integer ,`endM` integer,`sexType` integer,`detail` text )";
 	
 	public DBHelper(Context context,String DBname) {
 		super(context, DBname, null, Version);
@@ -52,6 +55,6 @@ public class DBHelper extends SQLiteOpenHelper{
 		db.execSQL(CreateClusterTable);
 		db.execSQL(CreateChatListTable);
 		db.execSQL(CreateSendTaskTable);
-	}
-	
+		db.execSQL(CreateDemandTable);
+	}	
 }

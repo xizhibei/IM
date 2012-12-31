@@ -10,6 +10,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qicq.im.config.SysConfig;
+
 
 import android.util.Log;
 
@@ -18,15 +20,14 @@ public class APIManager extends WebManager{
 	public final static int ERROR_IN_JSON = -1;
 	public final static int ERROR_NO_DATA = -2;
 	public final static int ERROR_ARG = -3;
-	public final static int ERROR_ENCODER = -4;
-
-	private final static String ALBUM_PATH = "/mnt/sdcard/QICQ/image/";  
+	public final static int ERROR_ENCODER = -4;	
 
 	public APIManager(String addr) {
 		super(addr);
-		File dir = new File(ALBUM_PATH);
-		if(!dir.exists()){			
-			Log.v("Dir","Create" + ALBUM_PATH + dir.mkdirs());
+		File dir = new File(SysConfig.ALBUM_PATH);
+		if(!dir.exists()){
+			dir.mkdirs();
+			Log.v("Dir","Create" + SysConfig.ALBUM_PATH);
 		}
 	}
 
@@ -61,7 +62,7 @@ public class APIManager extends WebManager{
 		String avatarUrl = p.getString("avatar");
 
 		File f = new File(avatarUrl);
-		avatarPath = ALBUM_PATH + f.getName();
+		avatarPath = SysConfig.ALBUM_PATH + f.getName();
 		//TODO download file from server
 
 		File tmp = new File(avatarPath);
@@ -73,7 +74,8 @@ public class APIManager extends WebManager{
 					"yyyy-MM-dd HH:mm:ss");
 			Log.v(avatarPath,dateFormat.format(new Date(modTime)));
 		}
-		return User.fromFriendList(
+		
+		User u = User.fromFriendList(
 				type,
 				p.getInt("uid"),
 				p.getString("name"),
@@ -86,6 +88,15 @@ public class APIManager extends WebManager{
 				(float) p.getDouble("distance"),
 				avatarUrl,
 				avatarPath);
+		if(p.has("a_name")){
+			Demand d = Demand.fromReciver(p.getString("a_name"), 
+					p.getInt("starttime"), 
+					p.getInt("expiretime"), 
+					p.getInt("sextype"), 
+					p.getString("detail"));
+			u.demand = d;
+		}
+		return u;
 	}
 
 	public User UserLogin(String email,String pwd){
@@ -143,20 +154,15 @@ public class APIManager extends WebManager{
 						JSONObject p = json.getJSONObject(String.valueOf(i));
 						list.add(parseUser(p,User.USER_TYPE_NEARBY | p.getInt("type")));
 					}
-					return list;
-				}else{
-					return null;
 				}
-
 			} catch (JSONException e) {
 				e.printStackTrace();
 				Log.v("NearbyPeople",e.toString());
-				return null;
 			}
 		}else{
 			Log.v("NearbyPeople","No data!");
-			return null;
 		}
+		return list;
 	}
 
 	public List<User> AllMyFriend(){
@@ -210,16 +216,16 @@ public class APIManager extends WebManager{
 		return null;
 	}
 
-	public int PublishDemands(String name,String startH,String startM,
-			String endH,String endM,String sexType){
+	public int PublishDemands(Demand d){
 		String tmp;
 		try {
-			tmp = "name=" + URLEncoder.encode(name,"UTF-8")
-					+ "&endH=" + endH
-					+ "&endM=" + endM
-					+ "&startH=" + startH
-					+ "&startM=" + startM
-					+ "&sextype=" + sexType;
+			tmp = "name=" + URLEncoder.encode(d.name,"UTF-8")
+					+ "&endH=" + d.endH
+					+ "&endM=" + d.endM
+					+ "&startH=" + d.startH
+					+ "&startM=" + d.startM
+					+ "&sextype=" + d.sexType
+					+ "&detail=" + URLEncoder.encode(d.detail,"UTF-8");
 			tmp = PostData(addr + "/want/publish", tmp);
 			if(tmp != null){
 				Log.v("Recive data",tmp);
@@ -280,7 +286,7 @@ public class APIManager extends WebManager{
 								p.getString("sendid"),
 								p.getInt("type"),
 								p.getInt("time"),
-								0)//TODO audio time
+								p.getInt("audiotime"))
 								);
 					}
 				}

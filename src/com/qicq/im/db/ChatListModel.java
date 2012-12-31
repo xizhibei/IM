@@ -27,6 +27,7 @@ public class ChatListModel extends AbstractModel {
 			cv.put("type", m.msg.type);
 			cv.put("direction", m.msg.direction);
 			cv.put("audiotime", m.msg.audioTime);
+			cv.put("sendstate",m.msg.sendState);
 			cv.put("count", m.unreadCount);
 			
 			
@@ -56,6 +57,7 @@ public class ChatListModel extends AbstractModel {
 			cv.put("type", m.type);
 			cv.put("direction", m.direction);
 			cv.put("audiotime", m.audioTime);
+			cv.put("sendstate",m.sendState);
 			cv.put("count", count);
 
 			if(count == 1){
@@ -96,7 +98,8 @@ public class ChatListModel extends AbstractModel {
 					c.getString(3), 
 					c.getInt(4), 
 					c.getInt(5),
-					c.getInt(6)
+					c.getInt(6),
+					c.getInt(7)
 					),new User(c.getInt(Idx_type),
 							c.getInt(Idx_uid), 
 							c.getString(Idx_name), 

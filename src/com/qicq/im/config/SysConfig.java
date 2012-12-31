@@ -8,4 +8,5 @@ public class SysConfig {
 	
 	public static final String AUDIO_PATH = "/mnt/sdcard/QICQ/audio/";
 	public static final String IMAGE_CAPTURE_PATH = "/mnt/sdcard/QICQ/camer/";
+	public static final String ALBUM_PATH = "/mnt/sdcard/QICQ/image/";  
 }

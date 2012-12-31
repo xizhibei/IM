@@ -32,6 +32,7 @@ public class MsgSendTaskModel extends AbstractModel{
 		cv.put("type",m.type);
 		cv.put("direction",m.direction);
 		cv.put("audiotime",m.audioTime);
+		cv.put("sendstate",m.sendState);
 		
 		return (int) db.insert(tableName, null,cv);
 	}
@@ -47,7 +48,8 @@ public class MsgSendTaskModel extends AbstractModel{
 					c.getString(3),
 					c.getInt(4),
 					c.getInt(5),
-					c.getInt(6));
+					c.getInt(6),
+					c.getInt(7));
 		}
 		c.close();
 		return msg;

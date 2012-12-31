@@ -15,6 +15,10 @@ public class ChatMessage {
 	public static final int MESSAGE_TYPE_IMAGE = 2;
 	public static final int MESSAGE_TYPE_VOICE = 3;
 	public static final int MESSAGE_TYPE_REQUEST = 4;
+	
+	public static final int MESSAGE_STATE_READY = 0;
+	public static final int MESSAGE_STATE_SEND = 1;
+	public static final int MESSAGE_STATE_FAIL = 2;
 
 	public int mid;
 	public int direction;
@@ -23,9 +27,9 @@ public class ChatMessage {
 	public int time;
 	public boolean isStored = false;
 	public boolean isReaded = true;
+	public int sendState;
 	
 	public int audioTime = 0;
-	
 	public int type;
 	
 	public ChatMessage(){
@@ -51,10 +55,11 @@ public class ChatMessage {
 		msg.targetId = targetId;
 		Date date = new Date();
 		msg.time = (int) (date.getTime() / 1000);
+		msg.sendState = MESSAGE_STATE_READY;
 		return msg;
 	}
 	
-	public static ChatMessage fromDatabase(int mid,int direction, String content,String targetId,int type,int time,int audiotime){
+	public static ChatMessage fromDatabase(int mid,int direction, String content,String targetId,int type,int time,int audiotime,int sendstate){
 		ChatMessage msg = new ChatMessage();
 		msg.mid = mid;
 		msg.direction = direction;
@@ -64,6 +69,7 @@ public class ChatMessage {
 		msg.time = time;
 		msg.isStored = true;
 		msg.audioTime = audiotime;
+		msg.sendState = sendstate;
 		return msg;
 	}
 	

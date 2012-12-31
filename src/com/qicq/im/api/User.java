@@ -11,7 +11,7 @@ import com.qicq.im.overlayitem.PeopleOverlayItem;
 
 public class User {
 	
-	public static final int USER_TYPE_NONE = -1;
+	public static final int USER_TYPE_NONE = 16;
 	public static final int USER_TYPE_ME = 0;
 	public static final int USER_TYPE_BEFOLLOWED = 1;
 	public static final int USER_TYPE_FANS = 2;
@@ -32,6 +32,8 @@ public class User {
 	public int lat;
 	public int lng;
 	public float distance;
+	
+	public Demand demand = null;
 
 	public static User fromLogin(int uid,String name,String sex,int age,String regdate,String lastupdate,
 			int lat,int lng,float distance,String avatar,String localavatar){

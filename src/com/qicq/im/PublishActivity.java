@@ -1,19 +1,21 @@
 package com.qicq.im;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import com.qicq.im.api.Demand;
 import com.qicq.im.app.LBSApp;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,9 +26,16 @@ public class PublishActivity extends Activity {
 
 	private Spinner sex = null;
 	private Spinner activity = null;
-	private TimePicker startTime = null;
-	private TimePicker endTime = null;
+	private TextView startTimeView = null;
+	private TextView endTimeView = null;
 	private Button submit = null;
+	private EditText detailEditText = null;
+
+	private Calendar c;
+	private int startH;
+	private int startM;
+	private int endH;
+	private int endM;
 
 	private ArrayList<String> activityItems = new ArrayList<String>();
 	private ArrayList<String> sexItems = new ArrayList<String>();
@@ -37,15 +46,60 @@ public class PublishActivity extends Activity {
 
 		sex = (Spinner)findViewById(R.id.sexSpinner);
 		activity = (Spinner)findViewById(R.id.activitySpinner);
-		startTime = (TimePicker)findViewById(R.id.startTimePicker);
-		endTime = (TimePicker)findViewById(R.id.endTimePicker);
+		startTimeView = (TextView)findViewById(R.id.startTimeShow);
+		endTimeView = (TextView)findViewById(R.id.endTimeShow);
 		submit = (Button)findViewById(R.id.submit);
+		detailEditText = (EditText) findViewById(R.id.detailEditText);
 
-		endTime.setIs24HourView(true);
-		startTime.setIs24HourView(true);
-		endTime.setCurrentMinute((endTime.getCurrentMinute() + 15) % 60);
-		if((endTime.getCurrentMinute() + 15) >= 60)
-			endTime.setCurrentHour((endTime.getCurrentHour() + 1) % 24);
+		c = Calendar.getInstance();
+		startTimeView.setText(c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE));
+		endTimeView.setText(c.get(Calendar.HOUR_OF_DAY) + ":" + (15 + c.get(Calendar.MINUTE)));
+		
+		startTimeView.setOnClickListener(new OnClickListener(){
+
+			public void onClick(View v) {
+				new TimePickerDialog(
+						PublishActivity.this,
+						new TimePickerDialog.OnTimeSetListener(){
+							public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+								startTimeView.setText(hourOfDay + ":" + minute);
+								startH = hourOfDay;
+								startM = minute;
+							}
+
+						},
+						c.get(Calendar.HOUR_OF_DAY),
+						c.get(Calendar.MINUTE),
+						true).show();
+			}
+
+		});
+
+		endTimeView.setOnClickListener(new OnClickListener(){
+
+			public void onClick(View v) {
+				new TimePickerDialog(
+						PublishActivity.this,
+						new TimePickerDialog.OnTimeSetListener(){
+							public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+								endTimeView.setText(hourOfDay + ":" + minute);
+								endH = hourOfDay;
+								endM = minute;
+							}
+
+						},
+						c.get(Calendar.HOUR_OF_DAY),
+						c.get(Calendar.MINUTE) + 15,
+						true).show();
+			}
+
+		});
+
+		//		endTime.setIs24HourView(true);
+		//		startTime.setIs24HourView(true);
+		//		endTime.setCurrentMinute((endTime.getCurrentMinute() + 15) % 60);
+		//		if((endTime.getCurrentMinute() + 15) >= 60)
+		//			endTime.setCurrentHour((endTime.getCurrentHour() + 1) % 24);
 
 		activityItems.add("ø¥µÁ”∞");
 		activityItems.add("≥‘∑π");
@@ -76,16 +130,6 @@ public class PublishActivity extends Activity {
 				tv.setTextColor(Color.BLACK);
 				ll.addView(tv);
 				return ll;
-			}
-
-		});
-		activity.setOnItemSelectedListener( new OnItemSelectedListener(){
-
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-			}
-
-			public void onNothingSelected(AdapterView<?> arg0) {				
 			}
 
 		});
@@ -120,31 +164,19 @@ public class PublishActivity extends Activity {
 			}
 
 		});
-		sex.setOnItemSelectedListener( new OnItemSelectedListener(){
 
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-			}
-
-			public void onNothingSelected(AdapterView<?> arg0) {				
-			}
-
-		});
-
-		OnClickListener listener = new OnClickListener(){
+		submit.setOnClickListener(new OnClickListener(){
 			public void onClick(View v) {
 				SearchButtonProcess(v);
 			}
-		};
-
-		submit.setOnClickListener(listener);
+		});
 	}
 
 	protected void SearchButtonProcess(View v) {
 		if(v.equals(submit)){
-			int start = startTime.getCurrentHour() * 60 + startTime.getCurrentMinute();
-			int end = endTime.getCurrentHour() * 60 + endTime.getCurrentMinute();
-			if(start > end){
+			int start = startH * 60 + startM;
+			int end = endH * 60 + endM;
+			if(start >= end){
 				Toast.makeText(this, "Error on start or end", Toast.LENGTH_LONG).show();
 				return;
 			}
@@ -152,12 +184,14 @@ public class PublishActivity extends Activity {
 
 			LBSApp app = (LBSApp)this.getApplication();
 			int ret = app.PublishDemands(
-					activityItems.get(activity.getSelectedItemPosition()), 
-					startTime.getCurrentHour().toString(), 
-					startTime.getCurrentMinute().toString(), 
-					endTime.getCurrentHour().toString(), 
-					endTime.getCurrentMinute().toString(), 
-					String.valueOf(sex.getSelectedItemPosition()) 
+					Demand.fromSender(
+							activityItems.get(activity.getSelectedItemPosition()), 
+							startH, 
+							startM, 
+							endH, 
+							endM, 
+							sex.getSelectedItemPosition(),
+							detailEditText.getText().toString())
 					);
 
 			if(ret == 0){	

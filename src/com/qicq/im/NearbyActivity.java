@@ -102,11 +102,11 @@ public class NearbyActivity extends MapActivity {
 		mMapView.getOverlays().add(mLocationOverlay);
 
 		app = (LBSApp) this.getApplication();
-		
+
 		overitem = new OverItemT(app, this, mMapView, mPopView);
 		mMapView.getOverlays().add(overitem); // 添加ItemizedOverlay实例到mMapView
 
-		
+
 		GeoPoint me = app.getUserLocation();
 		if (me != null)
 			mMapView.getController().animateTo(me);
@@ -170,17 +170,21 @@ public class NearbyActivity extends MapActivity {
 
 	protected void SearchButtonProcess(View v) {
 		if (getLoc.equals(v)) {
-			if (point != null) {
+			Location l = mBMapMan.getLocationManager().getLocationInfo();
+			if(l != null){
+				point = new GeoPoint((int) (l.getLatitude() * 1E6),(int) (l.getLongitude() * 1E6));
 				mMapView.getController().animateTo(point);
-			}
+				LBSToast.makeText(this, "移动至你所在地点", Toast.LENGTH_LONG).show();
+			}else
+				LBSToast.makeText(this, "获取地点失败", Toast.LENGTH_LONG).show();
 		} else if (maxZoom.equals(v)) {
 			mMapView.getController().setZoom(18);
 		} else if (webButton.equals(v)) {
 			Location l = mBMapMan.getLocationManager().getLocationInfo();
-			point = new GeoPoint((int) (l.getLatitude() * 1E6),
-					(int) (l.getLongitude() * 1E6));
-			int ret = app.LocationUpdate(point.getLatitudeE6(),
-					point.getLongitudeE6());
+			point = new GeoPoint((int) (l.getLatitude() * 1E6),(int) (l.getLongitude() * 1E6));
+
+			int ret = app.LocationUpdate(point.getLatitudeE6(),point.getLongitudeE6());
+
 			if (ret == 0) {
 				LBSToast.makeText(this, "更新成功", Toast.LENGTH_LONG).show();
 			} else
@@ -211,7 +215,7 @@ public class NearbyActivity extends MapActivity {
 
 	private void updateOverlayItems(int gender, int ageLevel, String updatetime) {
 		if (mMapView.getZoomLevel() <= 11) {
-			
+
 			Projection p = mMapView.getProjection();
 			GeoPoint p1 = p.fromPixels(0, 0);
 			GeoPoint p2 = p.fromPixels(mMapView.getWidth() - 1,
@@ -242,7 +246,7 @@ public class NearbyActivity extends MapActivity {
 				LBSToast.makeText(this, "获取周围人数据失败", Toast.LENGTH_LONG).show();
 		} else {
 			List<User> list = app.getNearbyPeople(true);
-			
+
 			overitem.setUserList(list);
 			if (list.size() != 0) {
 				overitem.clear();
@@ -272,8 +276,7 @@ public class NearbyActivity extends MapActivity {
 	@Override
 	protected void onResume() {
 		if (mBMapMan != null) {
-			mBMapMan.getLocationManager().requestLocationUpdates(
-					mLocationListener);
+			mBMapMan.getLocationManager().requestLocationUpdates(mLocationListener);
 			mLocationOverlay.enableMyLocation();
 			mLocationOverlay.enableCompass(); // 打开指南针
 			mBMapMan.start();
@@ -289,7 +292,6 @@ public class NearbyActivity extends MapActivity {
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

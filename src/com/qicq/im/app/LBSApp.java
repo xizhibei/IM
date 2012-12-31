@@ -7,6 +7,7 @@ import com.baidu.mapapi.GeoPoint;
 import com.qicq.im.Utilities.Utility;
 import com.qicq.im.api.APIManager;
 import com.qicq.im.api.ChatMessage;
+import com.qicq.im.api.Demand;
 import com.qicq.im.api.LocationCluster;
 import com.qicq.im.api.User;
 import com.qicq.im.config.UserConfig;
@@ -297,9 +298,8 @@ public class LBSApp extends Application{
 		service.chatListModel.insertAll(clis);
 	}
 
-	public int PublishDemands(String name,String startH,String startM,
-			String endH,String endM,String sexType){
-		return api.PublishDemands(name, startH, startM, endH, endM, sexType);
+	public int PublishDemands(Demand d){
+		return api.PublishDemands(d);
 	}
 
 	public int UserReg(String name,String email,String pwd){

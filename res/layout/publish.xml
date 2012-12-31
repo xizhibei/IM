@@ -18,42 +18,62 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/publish_type"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <Spinner
                 android:id="@+id/activitySpinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content" 
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"/>
+
             <TextView
                 android:id="@+id/textView1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/publish_start"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TimePicker
-                android:id="@+id/startTimePicker"
+
+            <TextView
+                android:id="@+id/startTimeShow"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/publish_end"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TimePicker
-                android:id="@+id/endTimePicker"
+
+            <TextView
+                android:id="@+id/endTimeShow"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/publish_gender"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -66,13 +86,17 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:text="@string/publish_detail"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
+
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/detailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:ems="10"
                 android:inputType="textMultiLine"
                 android:minLines="@integer/publish_detail_lines" />
