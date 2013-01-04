@@ -7,18 +7,18 @@ import android.util.Log;
 import com.qicq.im.api.APIManager;
 import com.qicq.im.api.ChatMessage;
 import com.qicq.im.config.SysConfig;
-import com.qicq.im.db.MsgSendTaskModel;
+import com.qicq.im.db.DBUtil;
 
 public class SendMessageThread extends AbstractMessageThread{
 
-	private MsgSendTaskModel task;
+	private DBUtil dbUtil;
 	private Context context;
 
-	public SendMessageThread(APIManager api,Context context,MsgSendTaskModel task){
+	public SendMessageThread(Context context,APIManager api,DBUtil dbUtil){
 		super(api);
 		this.api = api;
 		sleeptime = 1000;
-		this.task = task;
+		this.dbUtil = dbUtil;
 		this.context = context;
 	}
 
@@ -39,7 +39,7 @@ public class SendMessageThread extends AbstractMessageThread{
 			}
 
 			while(true){
-				ChatMessage msg = task.fetchRow();
+				ChatMessage msg = dbUtil.fetchOneMsgSendTask();
 				if(msg == null)
 					break;
 				
@@ -49,7 +49,7 @@ public class SendMessageThread extends AbstractMessageThread{
 				}
 				int ret = api.SendMessage(msg);
 				if(ret == 0){
-					task.delete(msg.mid);
+					dbUtil.deleteMsgSendTask(msg.mid);
 					Intent intent = new Intent(SysConfig.BROADCAST_SEND_MSG_ACTION);  
 					intent.putExtra("mid", msg.mid);
 					context.sendBroadcast(intent);

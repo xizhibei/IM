@@ -11,18 +11,9 @@ public class DBHelper extends SQLiteOpenHelper{
 			"CREATE TABLE IF NOT EXISTS msg (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer,`sendstate` integer)";
 	private static final String CreateUserTable = 
 			"CREATE TABLE IF NOT EXISTS user " +
-			"(`uid` integer PRIMARY KEY AUTOINCREMENT," +
-			"`type` integer , " +
-			"`name` text , " +
-			"`sex` text ," +
-			"`age` integer ," +
-			"`regdate` text ," +
-			"`lastupdate` text ," +
-			"`serverAvatarUrl` text ," +
-			"`localAvatarPath` text ," +
-			"`lat` integer ," +
-			"`lng` integer ," +
-			"`distance` float)";
+			"(`type` integer , `uid` integer PRIMARY KEY,`name` text , `sex` text ,`age` integer ," +
+			"`regdate` text ,`lastupdate` text ,`lat` integer ,`lng` integer ,`distance` float," +
+			"`serverAvatarUrl` text ,`localAvatarPath` text)";
 	
 	private static final String CreateClusterTable = 
 			"CREATE TABLE IF NOT EXISTS cluster (`cid` integer PRIMARY KEY AUTOINCREMENT,`latitude` integer ,`longtitude` integer ,`radix` integer )";
@@ -34,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper{
 			"CREATE TABLE IF NOT EXISTS msgsendtask (`mid` integer PRIMARY KEY AUTOINCREMENT,`direction` integer, `content` text,`targetid` integer,`type` integer ,`time` integer,`audiotime` integer,`sendstate` integer )";
 	
 	private static final String CreateDemandTable = 
-			"CREATE TABLE IF NOT EXISTS demand (`did` integer PRIMARY KEY AUTOINCREMENT,`name` text, `startH` integer,`startM` integer,`endH` integer ,`endM` integer,`sexType` integer,`detail` text )";
+			"CREATE TABLE IF NOT EXISTS demand (`did` integer PRIMARY KEY,`uid` integer,`name` text, `startTime` integer,`expireTime` integer,`sexType` integer,`detail` text )";
 	
 	public DBHelper(Context context,String DBname) {
 		super(context, DBname, null, Version);

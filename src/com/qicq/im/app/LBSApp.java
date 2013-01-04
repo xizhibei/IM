@@ -172,7 +172,7 @@ public class LBSApp extends Application{
 			return -1;
 		else{
 			service.initDatabase(String.valueOf(u.uid));
-			service.userModel.updateUser(u);
+			service.dbUtil.updateUser(u);
 			service.userConfig.setUid(String.valueOf(u.uid));
 			service.userConfig.setCookie(api.getCookie());
 			return 0;
@@ -187,13 +187,13 @@ public class LBSApp extends Application{
 	}
 
 	public List<User> getNearbyPeople(boolean refresh){
-		List<User> tmp = service.userModel.fetchAllNearby();
+		List<User> tmp = service.dbUtil.fetchAllNearby();
 
 		if(refresh || tmp.isEmpty() || service.userConfig.isNearbyNeedUpdate()){
 			List<User> news = api.NearbyPeople();
 			if(news.size() != 0){
 				tmp = news;
-				service.userModel.updateAll(tmp);
+				service.dbUtil.updateAllUser(tmp);
 				service.userConfig.setNearbyUpdate();
 			}
 		}
@@ -201,13 +201,13 @@ public class LBSApp extends Application{
 	}
 
 	public List<User> getFriends(boolean refresh){
-		List<User> tmp = service.userModel.fetchAllFriends();
+		List<User> tmp = service.dbUtil.fetchAllFriends();
 
 		if(refresh || tmp.isEmpty()|| service.userConfig.isFriendNeedUpdate()){
 			List<User> news = api.AllMyFriend();
 			if(news.size() != 0){
 				tmp = news;
-				service.userModel.updateAll(tmp);
+				service.dbUtil.updateAllUser(tmp);
 				service.userConfig.setFriendUpdate();
 			}
 		}
@@ -215,13 +215,13 @@ public class LBSApp extends Application{
 	}
 
 	public List<User> getFans(boolean refresh){
-		List<User> tmp = service.userModel.fetchAllFans();
+		List<User> tmp = service.dbUtil.fetchAllFans();
 
 		if(refresh || tmp.isEmpty() || service.userConfig.isFriendNeedUpdate()){
 			List<User> news = api.AllMyFriend();
 			if(news.size() != 0){
 				tmp = news;
-				service.userModel.updateAll(tmp);
+				service.dbUtil.updateAllUser(tmp);
 				service.userConfig.setFriendUpdate();
 			}
 		}
@@ -229,13 +229,13 @@ public class LBSApp extends Application{
 	}
 
 	public List<User> getFollowed(boolean refresh){
-		List<User> tmp = service.userModel.fetchAllFollowed();
+		List<User> tmp = service.dbUtil.fetchAllFollowed();
 
 		if(refresh || tmp.isEmpty() || service.userConfig.isFriendNeedUpdate()){
 			List<User> news = api.AllMyFriend();
 			if(news.size() != 0){
 				tmp = news;
-				service.userModel.updateAll(tmp);
+				service.dbUtil.updateAllUser(tmp);
 				service.userConfig.setFriendUpdate();
 			}
 		}
@@ -254,10 +254,10 @@ public class LBSApp extends Application{
 	 * @return the msg id in database
 	 */
 	public int sendMessage(ChatMessage msg){
-		int id = service.msgModel.insert(msg);
+		int id = service.dbUtil.insertMsg(msg);
 		msg.mid = id;
 //		service.sendMsgThread.addMsgs(msg);
-		service.msgSendTaskModel.insert(msg);
+		service.dbUtil.insertMsgSendTask(msg);
 		service.rcvMsgThread.setSleepTime(RcvMessageThread.MIN_TIME);
 		return id;
 	}
@@ -283,19 +283,19 @@ public class LBSApp extends Application{
 	}
 
 	public List<ChatMessage> getAllMsg(String targetid){
-		return service.msgModel.fetchAll(targetid);
+		return service.dbUtil.fetchAllMsg(targetid);
 	}
 
 	public void saveAllMsg(List<ChatMessage> msgs){
-		service.msgModel.insertAll(msgs);
+		service.dbUtil.insertAllMsg(msgs);
 	}
 
 	public List<ChatListItem> getAllChattingList(){
-		return service.chatListModel.fetchAll();
+		return service.dbUtil.fetchAllChatList();
 	}
 
 	public void saveAllChattingList(List<ChatListItem> clis){
-		service.chatListModel.insertAll(clis);
+		service.dbUtil.insertAllChatList(clis);
 	}
 
 	public int PublishDemands(Demand d){

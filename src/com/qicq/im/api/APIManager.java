@@ -89,7 +89,10 @@ public class APIManager extends WebManager{
 				avatarUrl,
 				avatarPath);
 		if(p.has("a_name")){
-			Demand d = Demand.fromReciver(p.getString("a_name"), 
+			Demand d = Demand.fromReciver(
+					p.getInt("did"),
+					p.getInt("uid"),
+					p.getString("a_name"), 
 					p.getInt("starttime"), 
 					p.getInt("expiretime"), 
 					p.getInt("sextype"), 

@@ -47,4 +47,9 @@
     <string name="publish_gender">想找的伙伴性别</string>
     <string name="publish_detail">详细要求</string>
     <string name="publish_ok">发布</string>
+    
+    <string name="pull_to_refresh_pull_label">Pull to refresh</string>
+    <string name="pull_to_refresh_release_label">Release to refresh</string>
+    <string name="pull_to_refresh_refreshing_label">Loading</string>
+    <string name="pull_to_refresh_tap_label">Tap to refresh</string>
 </resources>

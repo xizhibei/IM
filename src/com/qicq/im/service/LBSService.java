@@ -8,10 +8,7 @@ import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.User;
 import com.qicq.im.config.SysConfig;
 import com.qicq.im.config.UserConfig;
-import com.qicq.im.db.ChatListModel;
-import com.qicq.im.db.MsgModel;
-import com.qicq.im.db.MsgSendTaskModel;
-import com.qicq.im.db.UserModel;
+import com.qicq.im.db.DBUtil;
 import com.qicq.im.msg.MsgRcvEvent;
 import com.qicq.im.msg.MsgRcvListener;
 import com.qicq.im.thread.NetworkMonitorThread;
@@ -53,10 +50,12 @@ public class LBSService extends Service {
 	public String talkingToId = null;
 	//private boolean isStarted = false;
 
-	public UserModel userModel;
-	public MsgModel msgModel;
-	public ChatListModel chatListModel;
-	public MsgSendTaskModel msgSendTaskModel;
+//	public UserModel userModel;
+//	public MsgModel msgModel;
+//	public ChatListModel chatListModel;
+//	public MsgSendTaskModel msgSendTaskModel;
+	
+	public DBUtil dbUtil;
 
 	public class LBSBinder extends Binder {
 		public LBSService getService() {
@@ -88,7 +87,7 @@ public class LBSService extends Service {
 			initDatabase(userConfig.getUid());
 
 		
-		sendMsgThread = new SendMessageThread(api,this,msgSendTaskModel);
+		sendMsgThread = new SendMessageThread(this,api,dbUtil);
 		networkMonitorThread = new NetworkMonitorThread(this);	
 		rcvMsgThread = new RcvMessageThread(api);
 		
@@ -102,8 +101,8 @@ public class LBSService extends Service {
 						showNotification(R.drawable.card,"ÐÂÏûÏ¢",u.name,m.content);
 					}
 				}
-				msgModel.insertAll(msgs);
-				chatListModel.updateNewMsg(msgs);
+				dbUtil.insertAllMsg(msgs);
+				dbUtil.updateChatListNewMsg(msgs);
 				for(ChatMessage m : msgs){
 					getUser(m.targetId);//Just update database to match chatlist
 				}
@@ -156,21 +155,19 @@ public class LBSService extends Service {
 	}
 
 	public boolean isDatabaseOpened(){
-		return userModel != null && msgModel != null && chatListModel != null;
+		return dbUtil != null;
 	}
 
 	public void initDatabase(String uid){
-		userModel = new UserModel(this,uid);
-		msgModel = new MsgModel(this,uid);
-		chatListModel = new ChatListModel(this,uid);
-		msgSendTaskModel = new MsgSendTaskModel(this,uid);
+//		userModel = new UserModel(this,uid);
+//		msgModel = new MsgModel(this,uid);
+//		chatListModel = new ChatListModel(this,uid);
+//		msgSendTaskModel = new MsgSendTaskModel(this,uid);
+		dbUtil = new DBUtil((Context)this,uid);
 	}
 
 	public void closeDatabase(){
-		userModel.getDB().close();
-		userModel = null;
-		msgModel = null;
-		chatListModel = null;
+		dbUtil.close();
 	}
 
 	@Override
@@ -228,12 +225,12 @@ public class LBSService extends Service {
 	}
 
 	public User getUser(String uid){
-		User u = userModel.getUser(uid);
+		User u = dbUtil.getUser(uid);
 		if(u == null || userConfig.isFriendNeedUpdate()){
 			User tmp = api.getUser(uid);
 			if(tmp != null){
 				u = tmp;
-				userModel.updateUser(tmp);
+				dbUtil.updateUser(tmp);
 			}
 		}
 		return u;

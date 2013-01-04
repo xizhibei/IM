@@ -8,6 +8,8 @@ public class Demand {
 	public final static int DEMAND_SEX_FEMALE = 1;
 	public final static int DEMAND_SEX_BOTH = 2;
 	
+	public int did;
+	public int uid;
 	public String name;
 	int startTime;
 	int expireTime;
@@ -44,14 +46,45 @@ public class Demand {
 		return d;
 	}
 	
-	public static Demand fromReciver(String name,int startTime,
+	public static Demand fromReciver(int did,int uid,String name,int startTime,
 			int expireTime,int sexType,String detail){
 		Demand d = new Demand();
+		d.did = did;
+		d.uid = uid;
 		d.name = name;
 		d.startTime = startTime;
-		d.expireTime = expireTime;		
+		d.expireTime = expireTime;	
 		d.sexType = sexType;
 		d.detail = detail;
+		
+		Date date = new Date(startTime * 1000);
+		d.startH = date.getHours();
+		d.startM = date.getMinutes();
+		
+		date = new Date(expireTime * 1000);
+		d.endH = date.getHours();
+		d.endM = date.getMinutes();
+		return d;
+	}
+	
+	public static Demand fromDatabase(int did,int uid,String name,int startTime,
+			int expireTime,int sexType,String detail){
+		Demand d = new Demand();
+		d.did = did;
+		d.uid = uid;
+		d.name = name;
+		d.sexType = sexType;
+		d.detail = detail;	
+		d.startTime = startTime;
+		d.expireTime = expireTime;
+		
+		Date date = new Date(startTime * 1000);
+		d.startH = date.getHours();
+		d.startM = date.getMinutes();
+		
+		date = new Date(expireTime * 1000);
+		d.endH = date.getHours();
+		d.endM = date.getMinutes();
 		return d;
 	}
 }
