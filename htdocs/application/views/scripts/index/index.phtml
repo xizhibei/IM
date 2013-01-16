@@ -1,0 +1,51 @@
+Reg
+<form action="/user/reg" method="post">
+<input name="name" type="text"/>
+<input name="email" type="text"/>
+<input name="pwd" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+Login
+<form action="/user/login" method="post">
+<input name="email" type="text"/>
+<input name="pwd" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+Loc Update
+<form action="/loc/update" method="post">
+<input name="latitude" type="text"/>
+<input name="longtitude" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+want history
+<form action="/want/history" method="post">
+<input name="uid" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+Follow
+<form action="/friend/follow" method="post">
+<input name="uid" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+User info
+<form action="/user/info" method="post">
+<input name="uid" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+Cluster
+<form action="/loc/cluster" method="post">
+ltLat<input name="ltLat" type="text"/>
+ltLng<input name="ltLng" type="text"/><br>
+rbLat<input name="rbLat" type="text"/>
+rbLng<input name="rbLng" type="text"/><br>
+gender<input name="gender" type="text"/>
+agelevel<input name="agelevel" type="text"/><br>
+updatetime<input name="updatetime" type="text"/>
+<input name="submit" type="submit"/>
+</form>
+
+<form enctype="multipart/form-data" action="/file/upload" method="post">   
+File: <br> 
+<input name="file" type="file"><br> 
+<input type="submit" value="upload">   
+</form> 

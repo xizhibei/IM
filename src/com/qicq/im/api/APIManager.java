@@ -74,7 +74,7 @@ public class APIManager extends WebManager{
 					"yyyy-MM-dd HH:mm:ss");
 			Log.v(avatarPath,dateFormat.format(new Date(modTime)));
 		}
-		
+
 		User u = User.fromFriendList(
 				type,
 				p.getInt("uid"),
@@ -271,6 +271,25 @@ public class APIManager extends WebManager{
 		return ERROR_ENCODER;
 	}
 
+	public int SendRequestForDemand(int did,int targetId){
+		String tmp;
+		tmp = "type=" + ChatMessage.MESSAGE_TYPE_REQUEST + "&audiotime=0&rcvId="+targetId+"&content=";
+		tmp = PostData(addr + "/msg/send", tmp);
+		if(tmp != null){
+			Log.v("SendRequest ","SendRequestForDemand Recive data: "+tmp);
+			JSONObject json;
+			try {
+				json = new JSONObject(tmp);
+				return json.getInt("errno");
+			} catch (JSONException e) {
+				e.printStackTrace();
+				return ERROR_IN_JSON;
+			}
+		}else{
+			return ERROR_NO_DATA;
+		}
+	}
+
 	public List<ChatMessage> RcvMessage(){
 		String tmp = GetData(addr + "/msg/new");
 		List<ChatMessage> list = new ArrayList<ChatMessage>();
@@ -361,7 +380,7 @@ public class APIManager extends WebManager{
 			Log.v("UploadFile Recive data",tmp);
 			JSONObject json;
 			try {
-				
+
 				json = new JSONObject(tmp);
 				if(json.getInt("errno") == 0)
 					return json.getInt("fid");

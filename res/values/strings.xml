@@ -40,6 +40,7 @@
     <string name="want_detail_start">开始时间</string>
     <string name="want_detail_end">结束时间</string>
     <string name="want_detail_descip">详细描述</string>
+    <string name="want_detail_request">请求</string>
     
     <string name="publish_type">活动类型</string>
     <string name="publish_start">开始</string>

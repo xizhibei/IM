@@ -11,8 +11,8 @@ public class Demand {
 	public int did;
 	public int uid;
 	public String name;
-	int startTime;
-	int expireTime;
+	public int startTime;
+	public int expireTime;
 	public int startH;
 	public int startM;
 	public int endH;
@@ -86,5 +86,24 @@ public class Demand {
 		d.endH = date.getHours();
 		d.endM = date.getMinutes();
 		return d;
+	}
+	
+	public String getStartTime(){
+		Date date = new Date(startTime * 1000);
+		return date.toLocaleString();
+	}
+	
+	public String getExpireTime(){
+		Date date = new Date(expireTime * 1000);
+		return date.toLocaleString();
+	}
+	
+	public String getSextype(){
+		if(sexType == 1)
+			return "ÄÐ";
+		else if(sexType == 1)
+			return "Å®";
+		else
+			return "¾ù¿É";
 	}
 }

@@ -1,5 +1,6 @@
 package com.qicq.im.service;
 
+import java.lang.Thread.State;
 import java.util.List;
 import com.qicq.im.MainActivity;
 import com.qicq.im.R;
@@ -35,8 +36,6 @@ import android.util.Log;
 @SuppressLint("HandlerLeak")
 public class LBSService extends Service {
 
-	public User user = null;
-
 	public RcvMessageThread rcvMsgThread = null;
 	public SendMessageThread sendMsgThread = null;
 	private NetworkMonitorThread networkMonitorThread = null;
@@ -48,12 +47,6 @@ public class LBSService extends Service {
 	private NotificationManager notificationManager;
 
 	public String talkingToId = null;
-	//private boolean isStarted = false;
-
-//	public UserModel userModel;
-//	public MsgModel msgModel;
-//	public ChatListModel chatListModel;
-//	public MsgSendTaskModel msgSendTaskModel;
 	
 	public DBUtil dbUtil;
 
@@ -62,12 +55,6 @@ public class LBSService extends Service {
 			return LBSService.this;
 		}
 	}
-
-	//	private Handler handler = new Handler() {
-	//		public void handleMessage(Message msg) {
-	//
-	//		};
-	//	};
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -78,18 +65,14 @@ public class LBSService extends Service {
 		if(userConfig == null)
 			userConfig = new UserConfig(this,"config");
 
-		String cookie = userConfig.getCookie();
-		if(cookie != null)
-			api.setCookie(cookie);
-
 		String uid = userConfig.getUid();
-		if(uid != null && !isDatabaseOpened())
+		if(uid != null && dbUtil == null)
 			initDatabase(userConfig.getUid());
 
-		
-		sendMsgThread = new SendMessageThread(this,api,dbUtil);
-		networkMonitorThread = new NetworkMonitorThread(this);	
-		rcvMsgThread = new RcvMessageThread(api);
+		if(sendMsgThread == null)
+			sendMsgThread = new SendMessageThread(this,api,dbUtil);
+		if(rcvMsgThread == null)
+			rcvMsgThread = new RcvMessageThread(api);
 		
 		rcvMsgThread.addMsgRcvListener(new MsgRcvListener() {
 
@@ -108,6 +91,18 @@ public class LBSService extends Service {
 				}
 			}
 		});
+		
+		String cookie = userConfig.getCookie();
+		if(cookie != null){
+			api.setCookie(cookie);
+			if(rcvMsgThread.getState() == State.NEW)
+				rcvMsgThread.start();
+			if(sendMsgThread.getState() == State.NEW)
+				sendMsgThread.start();
+		}
+				
+		if(networkMonitorThread == null)
+			networkMonitorThread = new NetworkMonitorThread(this);
 
 		networkMonitorThread.addNetworkStateListener(new NetworkStateListener(){
 
@@ -137,57 +132,41 @@ public class LBSService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.v("Service","onCreate");
-		api = new APIManager(SysConfig.API_SERVER_ADDR);
-		
-		
+		if(api == null)
+			api = new APIManager(SysConfig.API_SERVER_ADDR);		
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
-		Log.v("Service","onStart" + startId);
+		Log.v("Service","onStart id = " + startId);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-		Log.v("Service","onStartCommand"+startId);
+		Log.v("Service","onStartCommand id = " + startId + " flag = " + flags);
 		return super.onStartCommand(intent, flags, startId);
 	}
 
-	public boolean isDatabaseOpened(){
-		return dbUtil != null;
-	}
-
 	public void initDatabase(String uid){
-//		userModel = new UserModel(this,uid);
-//		msgModel = new MsgModel(this,uid);
-//		chatListModel = new ChatListModel(this,uid);
-//		msgSendTaskModel = new MsgSendTaskModel(this,uid);
-		dbUtil = new DBUtil((Context)this,uid);
+		dbUtil = new DBUtil(getApplicationContext(),uid);
 	}
-
 	public void closeDatabase(){
 		dbUtil.close();
 	}
 
 	@Override
-	public void onDestroy() {		
+	public void onDestroy() {
+		Log.v("LBSService","Destory");
 		rcvMsgThread.setStop();
 		sendMsgThread.setStop();
 		networkMonitorThread.setStop();
 		super.onDestroy();
 	}
 
-
-
 	public LBSBinder getBinder() {
 		return binder;
 	}
-
-//	public void sendMessage(ChatMessage msg){
-////		sendMsgThread.addMsgs(msg);
-//		msgSendTaskModel.insert(msg);
-//	}
 
 	public void showNotification(int icon, String tickertext, String title,
 			String content) {
@@ -212,14 +191,6 @@ public class LBSService extends Service {
 
 	}
 
-	//	public boolean isStarted() {
-	//		return isStarted;
-	//	}
-	//
-	//	public void setStarted(boolean isStarted) {
-	//		this.isStarted = isStarted;
-	//	}
-
 	public User getUser(){
 		return getUser(userConfig.getUid());
 	}
@@ -231,6 +202,7 @@ public class LBSService extends Service {
 			if(tmp != null){
 				u = tmp;
 				dbUtil.updateUser(tmp);
+				userConfig.setFriendUpdate();
 			}
 		}
 		return u;

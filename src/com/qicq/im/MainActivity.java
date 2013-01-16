@@ -1,6 +1,5 @@
 package com.qicq.im;
 
-import com.qicq.im.app.LBSApp;
 import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +16,7 @@ import android.widget.TabHost.TabSpec;
 
 public class MainActivity extends TabActivity {
 	
-	private LBSApp app;
+	//private LBSApp app;
 	
 	private class TabView extends LinearLayout {
 		ImageView imageView;
@@ -47,7 +46,7 @@ public class MainActivity extends TabActivity {
 		setContentView(R.layout.tab);
 		TabHost tabHost = getTabHost();
 		
-		app = (LBSApp)this.getApplication();
+		//app = (LBSApp)this.getApplication();
 		
 		TabView view = null;
 
@@ -88,12 +87,6 @@ public class MainActivity extends TabActivity {
 		tabHost.addTab(contactBookSpec);
 		tabHost.addTab(smsMessageSpec);
 		tabHost.addTab(settingSpec);
-
-//		String cookie = this.getIntent().getStringExtra("Cookie");
-//		if(cookie != null)
-//			app.setCookie(cookie);
-		
-		app.startMsgThread();
 		
 		tabHost.setCurrentTab(0);	
 	}

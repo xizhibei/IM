@@ -20,35 +20,24 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light" >
-        <activity android:name="AccountActivity" >
-        </activity>
-        <activity android:name="ConfigActivity" >
-        </activity>
-        <activity android:name="LoginActivity" >
-        </activity>
-        <activity android:name="MsgActivity" >
-        </activity>
-        <activity android:name="MsgListActivity" >    
-        </activity>
-        <activity android:name="FriendActivity" >    
-        </activity>
-        <activity android:name="WantDetailActivity" >    
-        </activity>
+        <activity android:name="AccountActivity" />
+        <activity android:name="ConfigActivity" />
+        <activity android:name="LoginActivity" />
+        <activity android:name="MsgActivity" />
+        <activity android:name="MsgListActivity" />
+        <activity android:name="FriendActivity" />
+        <activity android:name="WantDetailActivity" />
+        <activity android:name="UserDetailActivity" />
         <activity android:name="LogoActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="MainActivity" >
-        </activity>
-        <activity android:name="PublishActivity" >
-        </activity>
-        <activity android:name="RegActivity" >
-        </activity>
-        <activity android:name="NearbyActivity" >
-        </activity>
+        <activity android:name="MainActivity" />
+        <activity android:name="PublishActivity" />
+        <activity android:name="RegActivity" />
+        <activity android:name="NearbyActivity" />
         <service android:name=".service.LBSService">
             <intent-filter>  
                 <action android:name="com.qicq.im.service.LBSService"></action>  

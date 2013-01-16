@@ -25,7 +25,7 @@ public class DBUtil {
 			db = helper.getWritableDatabase();
 		}
 	}
-	
+
 	public void close(){
 		if(db != null)
 			db.close();
@@ -39,7 +39,7 @@ public class DBUtil {
 			insertMsg(m);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param m message
@@ -75,19 +75,17 @@ public class DBUtil {
 		Log.v("MsgModel","get msg size" + msgs.size() + " with uid " + targetId);
 		return msgs;
 	}
-	
+
 	/*******************User table begin********************/
-	
+
 	public void updateAllUser(List<User> users){
 		for(User u : users){
 			updateUser(u);
-			if(u.demand != null)
-				updateDemand(u.demand);
 		}
 	}
-	
+
 	private User getUser(Cursor c){
-		return new User(c.getInt(0),
+		User u = new User(c.getInt(0),
 				c.getInt(1), 
 				c.getString(2), 
 				c.getString(3), 
@@ -100,8 +98,12 @@ public class DBUtil {
 				c.getString(10), 
 				c.getString(11)
 				);
+		int did = c.getInt(12);
+		if(did != 0)
+			u.demand = this.fetchDemand(did);
+		return u;
 	}
-	
+
 	public User getUser(String uid){
 		Cursor c = db.rawQuery("select * from user where uid = " + uid, null);
 		if(!c.moveToNext()){
@@ -109,16 +111,16 @@ public class DBUtil {
 			Log.v("UserModel","Fail to get user " + uid);
 			return null;
 		}
-		
+
 		User u = getUser(c);
 		c.close();
 		return u;
 	}
-	
+
 	public List<User> fetchAllUser(String sql){
 		Cursor c = db.rawQuery(sql, null);		
 		List<User> users = new ArrayList<User>();
-		
+
 		while(c.moveToNext()){
 			users.add(getUser(c));
 		}
@@ -126,37 +128,41 @@ public class DBUtil {
 		Log.v("UserModel",sql + " outcome: " + users.size());
 		return users;
 	}
-	
+
 	public List<User> fetchAllFans(){
 		return fetchAllUser("select * from user where type & " + User.USER_TYPE_FANS + " <> 0");
 	}
-	
+
 	public List<User> fetchAllFollowed(){
 		return fetchAllUser("select * from user where type & " + User.USER_TYPE_BEFOLLOWED + " <> 0");
 	}
-	
+
 	public List<User> fetchAllFriends(){
 		return fetchAllUser("select * from user where type & " + User.USER_TYPE_FRIEND  + " = " + User.USER_TYPE_FRIEND);
 	}
-	
+
 	public List<User> fetchAllNearby(){
-		return fetchAllUser("select * from user where type = " + User.USER_TYPE_NEARBY);
+		return fetchAllUser("select * from user where type & " + User.USER_TYPE_NEARBY  + " = " + User.USER_TYPE_NEARBY );
 	}
-	
+
 	public void updateUser(User u){
 		ContentValues cv = new ContentValues();
 		cv.put("type",u.type);
-        cv.put("name",u.name);
-        cv.put("sex",u.sex);
-        cv.put("age",u.age);
-        cv.put("regdate",u.regdate);
-        cv.put("lastupdate",u.lastupdate);
-        cv.put("serverAvatarUrl",u.serverAvatarUrl);
-        cv.put("localAvatarPath",u.localAvatarPath);
-        cv.put("lat",u.lat);
-        cv.put("lng",u.lng);
-        cv.put("distance",u.distance);
-        
+		cv.put("name",u.name);
+		cv.put("sex",u.sex);
+		cv.put("age",u.age);
+		cv.put("regdate",u.regdate);
+		cv.put("lastupdate",u.lastupdate);
+		cv.put("serverAvatarUrl",u.serverAvatarUrl);
+		cv.put("localAvatarPath",u.localAvatarPath);
+		cv.put("lat",u.lat);
+		cv.put("lng",u.lng);
+		cv.put("distance",u.distance);
+		if(u.demand != null)
+			cv.put("did", u.demand.did);
+		else
+			cv.put("did", 0);
+
 		Cursor c = db.rawQuery("select * from user where uid = " + u.uid,null);
 		if(!c.moveToNext()){
 			cv.put("uid", u.uid);
@@ -167,10 +173,13 @@ public class DBUtil {
 			Log.v("UserModel","Update affected return " + ret);
 		}
 		c.close();
+
+		if(u.demand != null)
+			updateDemand(u.demand);
 	}
-	
+
 	/*******************Msg send task table begin********************/
-	
+
 	public void insertAllMsgSendTask(List<ChatMessage> msgs){
 		for(ChatMessage m : msgs){
 			if(m.isStored)
@@ -178,7 +187,7 @@ public class DBUtil {
 			insertMsgSendTask(m);
 		}
 	}
-	
+
 	public int insertMsgSendTask(ChatMessage m){
 		ContentValues cv = new ContentValues();
 		cv.put("mid",m.mid);
@@ -189,7 +198,7 @@ public class DBUtil {
 		cv.put("direction",m.direction);
 		cv.put("audiotime",m.audioTime);
 		cv.put("sendstate",m.sendState);
-		
+
 		return (int) db.insert("msgsendtask", null,cv);
 	}
 
@@ -210,11 +219,11 @@ public class DBUtil {
 		c.close();
 		return msg;
 	}
-	
+
 	public void deleteMsgSendTask(int mid){
 		db.delete("msgsendtask", "mid = " + mid,null);
 	}
-	
+
 	/*******************ChatList table begin********************/
 	public void insertAllChatList(List<ChatListItem> msgs) {
 		for (ChatListItem m : msgs) {
@@ -226,8 +235,8 @@ public class DBUtil {
 			cv.put("audiotime", m.msg.audioTime);
 			cv.put("sendstate",m.msg.sendState);
 			cv.put("count", m.unreadCount);
-			
-			
+
+
 			Cursor c = db.rawQuery("select * from chatlist where targetid = " + m.msg.targetId, null);
 			if(c.moveToNext()){
 				int ret = db.update("chatlist", cv,"targetid = " + m.msg.targetId,null);
@@ -267,19 +276,19 @@ public class DBUtil {
 		}
 	}
 
-//	private final static String COLUMN_NAME_uid = "uid";
-//	private final static String COLUMN_NAME_type = "type";
-//	private final static String COLUMN_NAME_name = "name";
-//	private final static String COLUMN_NAME_sex = "sex";
-//	private final static String COLUMN_NAME_age = "age";
-//	private final static String COLUMN_NAME_regdate = "regdate";
-//	private final static String COLUMN_NAME_lastupdate = "lastupdate";
-//	private final static String COLUMN_NAME_serverAvatarUrl = "serverAvatarUrl";
-//	private final static String COLUMN_NAME_localAvatarPath = "localAvatarPath";
-//	private final static String COLUMN_NAME_lat = "lat";
-//	private final static String COLUMN_NAME_lng = "lng";
-//	private final static String COLUMN_NAME_distance = "distance";
-	
+	//	private final static String COLUMN_NAME_uid = "uid";
+	//	private final static String COLUMN_NAME_type = "type";
+	//	private final static String COLUMN_NAME_name = "name";
+	//	private final static String COLUMN_NAME_sex = "sex";
+	//	private final static String COLUMN_NAME_age = "age";
+	//	private final static String COLUMN_NAME_regdate = "regdate";
+	//	private final static String COLUMN_NAME_lastupdate = "lastupdate";
+	//	private final static String COLUMN_NAME_serverAvatarUrl = "serverAvatarUrl";
+	//	private final static String COLUMN_NAME_localAvatarPath = "localAvatarPath";
+	//	private final static String COLUMN_NAME_lat = "lat";
+	//	private final static String COLUMN_NAME_lng = "lng";
+	//	private final static String COLUMN_NAME_distance = "distance";
+
 	public List<ChatListItem> fetchAllChatList() {
 		Cursor c = db.rawQuery("select * from chatlist,user where uid = targetid", null);
 		List<ChatListItem> msgs = new ArrayList<ChatListItem>();
@@ -321,19 +330,39 @@ public class DBUtil {
 							c.getString(Idx_serverAvatarUrl), 
 							c.getString(Idx_localAvatarPath)
 							), 
-					c.getInt(Idx_count)));
+							c.getInt(Idx_count)));
 		}
 		c.close();
 		Log.v("ChatListModel","fetch all " + msgs.size());
 		return msgs;
 	}
-	
+
 	/*******************Demand table begin********************/
-	
+
+	public Demand fetchDemand(int did){
+		Cursor c = db.rawQuery("select * from demand where did = " + did , null);		
+
+		if(!c.moveToNext()){
+			c.close();
+			Log.v("DemandModel","Fail to get Demand " + did);
+			return null;
+		}
+		Demand d = Demand.fromDatabase(
+				c.getInt(0),
+				c.getInt(1),
+				c.getString(2),
+				c.getInt(3),
+				c.getInt(4),
+				c.getInt(5),
+				c.getString(6)
+				);
+		c.close();
+		return d;
+	}
 	public List<Demand> fetchAllDemand(String uid){
 		Cursor c = db.rawQuery("select * from demand where uid = " + uid , null);		
 		List<Demand> demands = new ArrayList<Demand>();
-		
+
 		while(c.moveToNext()){
 			demands.add( Demand.fromDatabase(
 					c.getInt(0),
@@ -349,18 +378,16 @@ public class DBUtil {
 		Log.v("DemandModel","outcome: " + demands.size());
 		return demands;
 	}
-	
+
 	public void updateDemand(Demand d){
 		ContentValues cv = new ContentValues();
 		cv.put("uid",d.uid);
 		cv.put("name",d.name);
-        cv.put("startH",d.startH);
-        cv.put("startM",d.startM);
-        cv.put("endH",d.endH);
-        cv.put("endM",d.endM);
-        cv.put("sexType",d.sexType);
-        cv.put("detail",d.detail);
-        
+		cv.put("startTime",d.startTime);
+		cv.put("expireTime",d.expireTime);
+		cv.put("sexType",d.sexType);
+		cv.put("detail",d.detail);
+
 		Cursor c = db.rawQuery("select * from demand where did = " + d.did,null);
 		if(!c.moveToNext()){
 			cv.put("did", d.did);
@@ -372,7 +399,7 @@ public class DBUtil {
 		}
 		c.close();
 	}
-	
+
 	public void updateAllDemand(List<Demand> ds){
 		for(Demand d : ds){
 			updateDemand(d);

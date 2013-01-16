@@ -92,6 +92,9 @@ public class User {
 				d.setBounds(-w, -h, w, h);
 			}
 		}
-		return new PeopleOverlayItem(new GeoPoint(lat,lng),sex,name + " " + lastupdate + " " + regdate,d);
+		if(demand == null)
+			return new PeopleOverlayItem(new GeoPoint(lat,lng),sex,name + " " + lastupdate + " " + regdate,d,String.valueOf(uid),sex,null);
+		else
+			return new PeopleOverlayItem(new GeoPoint(lat,lng),sex,name + " " + lastupdate + " " + regdate,d,String.valueOf(uid),sex,demand.name);
 	}
 }

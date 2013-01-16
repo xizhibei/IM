@@ -13,22 +13,32 @@ import android.widget.Toast;
 
 
 public class LBSToast extends Toast{
-
+	public LBSToast(Context context){
+		super(context);
+	}
+	
+	public LBSToast(Context context,CharSequence content){
+		super(context);
+		LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+		   View layout = inflater.inflate(R.layout.lbstoast,
+		     (ViewGroup) ((Activity) context).findViewById(R.id.toast_root));
+		   TextView text = (TextView) layout.findViewById(R.id.toast_content);
+		   text.setText(content);
+		   
+		   this.setGravity(Gravity.CENTER, 0, 0);
+		   this.setView(layout);
+		   this.setDuration(Toast.LENGTH_LONG);
+	}
+	
 	public LBSToast(Context context,CharSequence content, int duration) {
 		super(context);
 		LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 		   View layout = inflater.inflate(R.layout.lbstoast,
 		     (ViewGroup) ((Activity) context).findViewById(R.id.toast_root));
-		   
-//		   ImageView image = (ImageView) layout
-//		     .findViewById(R.id.toast_icon);
-//		   
-//		   image.setImageResource(R.drawable.avatar);
 		   TextView text = (TextView) layout.findViewById(R.id.toast_content);
 		   text.setText(content);
 		   
 		   this.setGravity(Gravity.CENTER, 0, 0);
-		   //this.setDuration(Toast.LENGTH_LONG);
 		   this.setView(layout);
 		   this.setDuration(duration);
 	}

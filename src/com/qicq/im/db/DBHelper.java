@@ -13,7 +13,7 @@ public class DBHelper extends SQLiteOpenHelper{
 			"CREATE TABLE IF NOT EXISTS user " +
 			"(`type` integer , `uid` integer PRIMARY KEY,`name` text , `sex` text ,`age` integer ," +
 			"`regdate` text ,`lastupdate` text ,`lat` integer ,`lng` integer ,`distance` float," +
-			"`serverAvatarUrl` text ,`localAvatarPath` text)";
+			"`serverAvatarUrl` text ,`localAvatarPath` text,`did` integer)";
 	
 	private static final String CreateClusterTable = 
 			"CREATE TABLE IF NOT EXISTS cluster (`cid` integer PRIMARY KEY AUTOINCREMENT,`latitude` integer ,`longtitude` integer ,`radix` integer )";
@@ -26,6 +26,9 @@ public class DBHelper extends SQLiteOpenHelper{
 	
 	private static final String CreateDemandTable = 
 			"CREATE TABLE IF NOT EXISTS demand (`did` integer PRIMARY KEY,`uid` integer,`name` text, `startTime` integer,`expireTime` integer,`sexType` integer,`detail` text )";
+	
+	private static final String CreateActivityTable = 
+			"CREATE TABLE IF NOT EXISTS activity (`aid` integer PRIMARY KEY,`name` text, `path` text,`count` integer)";
 	
 	public DBHelper(Context context,String DBname) {
 		super(context, DBname, null, Version);

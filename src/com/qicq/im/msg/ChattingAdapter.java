@@ -64,6 +64,10 @@ public class ChattingAdapter extends BaseAdapter {
 				convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
 				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
 				holder.text.setText("   " + message.audioTime + "''    ");
+			}else if(message.type == ChatMessage.MESSAGE_TYPE_REQUEST){
+				convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
+				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
+				holder.text.setText("   «Î«Û      ");
 			}
 		} else {
 			holder.flag = ChatMessage.MESSAGE_TO;
@@ -81,6 +85,11 @@ public class ChattingAdapter extends BaseAdapter {
 				convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
 				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
 				holder.text.setText("   " + message.audioTime + "''    ");
+			}
+			else if(message.type == ChatMessage.MESSAGE_TYPE_REQUEST){
+				convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
+				holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
+				holder.text.setText("   «Î«Û      ");
 			}
 		}			
 		convertView.setTag(holder);

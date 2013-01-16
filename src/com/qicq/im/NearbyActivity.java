@@ -22,6 +22,7 @@ import com.baidu.mapapi.Projection;
 import com.qicq.im.api.LocationCluster;
 import com.qicq.im.api.User;
 import com.qicq.im.app.LBSApp;
+import com.qicq.im.config.SysConfig;
 import com.qicq.im.overlayitem.OverItemT;
 import com.qicq.im.popwin.LBSToast;
 import com.qicq.im.popwin.NearbyOptionPopupWindow;
@@ -55,7 +56,7 @@ public class NearbyActivity extends MapActivity {
 		setContentView(R.layout.nearby);
 
 		mBMapMan = new BMapManager(getApplication());
-		mBMapMan.init("5AD5689000995481C5CC182EF8ACDD91596C98CE", null);
+		mBMapMan.init(SysConfig.BAIDU_API_KEY, null);
 		mBMapMan.start();
 
 		super.initMapActivity(mBMapMan);
@@ -103,17 +104,17 @@ public class NearbyActivity extends MapActivity {
 
 		app = (LBSApp) this.getApplication();
 
-		overitem = new OverItemT(app, this, mMapView, mPopView);
+		overitem = new OverItemT(this, app, mMapView, mPopView);
 		mMapView.getOverlays().add(overitem); // 添加ItemizedOverlay实例到mMapView
 
 
 		GeoPoint me = app.getUserLocation();
 		if (me != null)
-			mMapView.getController().animateTo(me);
+			mMapView.getController().setCenter(me);
 
 		mBMapMan.getLocationManager().requestLocationUpdates(mLocationListener);
 
-		mMapView.getController().setZoom(5);
+		mMapView.getController().setZoom(15);
 	}
 
 	private LocationListener mLocationListener = new LocationListener() {
@@ -173,10 +174,14 @@ public class NearbyActivity extends MapActivity {
 			Location l = mBMapMan.getLocationManager().getLocationInfo();
 			if(l != null){
 				point = new GeoPoint((int) (l.getLatitude() * 1E6),(int) (l.getLongitude() * 1E6));
-				mMapView.getController().animateTo(point);
-				LBSToast.makeText(this, "移动至你所在地点", Toast.LENGTH_LONG).show();
 			}else
 				LBSToast.makeText(this, "获取地点失败", Toast.LENGTH_LONG).show();
+
+			if(point != null){
+				mMapView.getController().animateTo(point);
+				LBSToast.makeText(this, "移动至你所在地点", Toast.LENGTH_LONG).show();
+			}
+
 		} else if (maxZoom.equals(v)) {
 			mMapView.getController().setZoom(18);
 		} else if (webButton.equals(v)) {
@@ -245,9 +250,7 @@ public class NearbyActivity extends MapActivity {
 			} else
 				LBSToast.makeText(this, "获取周围人数据失败", Toast.LENGTH_LONG).show();
 		} else {
-			List<User> list = app.getNearbyPeople(true);
-
-			overitem.setUserList(list);
+			List<User> list = app.getNearbyPeople(false);
 			if (list.size() != 0) {
 				overitem.clear();
 				overitem.add(app.getUser().toOverlayItem());

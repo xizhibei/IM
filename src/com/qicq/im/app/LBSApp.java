@@ -98,57 +98,16 @@ public class LBSApp extends Application{
 	@Override
 	public void onTerminate(){
 	}
-
-	public void startMsgThread(){
-		if(service != null){
-			if(service.rcvMsgThread.getState() == State.NEW)
-				service.rcvMsgThread.start();
-			else
-				service.rcvMsgThread.setNeedPause(false);
-			if(service.sendMsgThread.getState() == State.NEW)
-				service.sendMsgThread.start();
-			else
-				service.sendMsgThread.setNeedPause(false);
-		}else
-			Log.e("LBSApp", "service not bind yet!!!");
-	}
-
-	public boolean isUserLogin(){
-		if(service == null)
-			return false;
-		return service.user == null;
-	}
-
+	
 	public GeoPoint getUserLocation(){
 		if(service == null)
 			return null;
-		if(service.user == null)
+		User user = service.getUser();
+		if(user == null)
 			return null;
-		return new GeoPoint(service.user.lat,service.user.lng);
+		return new GeoPoint(user.lat,user.lng);
 	}
 
-	//	public User getUser(){
-	//		if(service.user == null){
-	//			User u = service.userModel.getUser(userConfig.getUid());
-	//			if(userConfig.isMeNeedUpdate() || u == null){
-	//				service.user = api.getUser(null);
-	//				service.userModel.updateUser(service.user);
-	//				userConfig.setMeUpdate();
-	//			}else{
-	//				service.user = u;
-	//			}
-	//		}
-	//		return service.user;
-	//	}
-	//
-	//	public User getUser(String uid){
-	//		User u = service.userModel.getUser(uid);
-	//		if(u == null || userConfig.isFriendNeedUpdate()){
-	//			u = api.getUser(uid);
-	//			service.userModel.updateUser(u);
-	//		}
-	//		return u;
-	//	}
 	public User getUser(){
 		return service.getUser();
 	}
@@ -175,7 +134,25 @@ public class LBSApp extends Application{
 			service.dbUtil.updateUser(u);
 			service.userConfig.setUid(String.valueOf(u.uid));
 			service.userConfig.setCookie(api.getCookie());
+			
+			startMsgThread();
+			
 			return 0;
+		}
+	}
+	
+	private void startMsgThread(){
+		if(service != null){
+			if(service.rcvMsgThread.getState() == State.NEW)
+				service.rcvMsgThread.start();
+			else
+				service.rcvMsgThread.setNeedPause(false);
+			if(service.sendMsgThread.getState() == State.NEW)
+				service.sendMsgThread.start();
+			else
+				service.sendMsgThread.setNeedPause(false);
+		}else{
+			Log.e("LBSApp", "service not bind yet!!!");
 		}
 	}
 
@@ -243,8 +220,6 @@ public class LBSApp extends Application{
 	}
 
 	public int LocationUpdate(int lat,int lng){
-		service.user.lat = lat;
-		service.user.lng = lng;
 		return api.LocationUpdate(lat, lng);
 	}
 
@@ -313,5 +288,9 @@ public class LBSApp extends Application{
 	
 	public void UploadFile(String filename){
 		api.UploadFile(filename);
+	}
+	
+	public int sendRequestForDemand(int did,int targetId){
+		return api.SendRequestForDemand(did, targetId);
 	}
 }
