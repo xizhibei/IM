@@ -73,6 +73,7 @@ class FriendController extends Zend_Controller_Action {
                         'lng' => $r ['longitude'],
                         'avatar' => $f->getAvatar($r['avatarid']),
                         'distance' => $dis,
+                        'did' => $r['did'],
                         'a_name' => $r['a_name'],
                         'expiretime' => $r['expiretime'],
                         'starttime' => $r['starttime'],

@@ -6,7 +6,6 @@ import com.qicq.im.api.User;
 import com.qicq.im.app.LBSApp;
 import com.qicq.im.msg.ChatListItem;
 import com.qicq.im.msg.MsgListAdapter;
-import com.qicq.im.msg.MsgRcvEvent;
 import com.qicq.im.msg.MsgRcvListener;
 
 import android.annotation.SuppressLint;
@@ -26,9 +25,9 @@ public class MsgListActivity extends Activity{
 
 	private MsgListAdapter msgListAdapter;
 	private LBSApp app;
-	
+
 	private ListView listView;
-	
+
 	private Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -46,7 +45,7 @@ public class MsgListActivity extends Activity{
 		initMsgListAdapter();
 		listView.setAdapter(msgListAdapter);
 		msgListAdapter.notifyDataSetChanged();
-		
+
 		listView.setOnItemClickListener( new OnItemClickListener(){
 
 			public void onItemClick(AdapterView<?> adapterView, View view,
@@ -55,11 +54,18 @@ public class MsgListActivity extends Activity{
 				Toast.makeText(MsgListActivity.this,
 						"Pos: " + position, Toast.LENGTH_LONG).show();
 
-				Intent i = new Intent(MsgListActivity.this,MsgActivity.class);
-				User f = ((ChatListItem)msgListAdapter.getItem(position)).user;
-				
-				i.putExtra("name", f.name);
-				i.putExtra("uid", String.valueOf(f.uid));
+				ChatListItem tmp = (ChatListItem)msgListAdapter.getItem(position);
+				Intent i = null;
+				if(tmp.msg.type == ChatMessage.MESSAGE_TYPE_HELLO){
+				}else if(tmp.msg.type == ChatMessage.MESSAGE_TYPE_HELLO){
+				}else{
+
+					i = new Intent(MsgListActivity.this,MsgActivity.class);
+					User f = tmp.user;
+
+					i.putExtra("name", f.name);
+					i.putExtra("uid", String.valueOf(f.uid));
+				}
 				MsgListActivity.this.startActivity(i);
 			}
 
@@ -67,10 +73,26 @@ public class MsgListActivity extends Activity{
 
 		app.addMsgRcvListener(m);
 	}
-	
+
 	private MsgRcvListener m = new MsgRcvListener(){
 
-		public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
+		public void onMsgRcved(List<ChatMessage> msgs) {
+			for(ChatMessage m : msgs){
+				User user = app.getUser(m.targetId);
+				msgListAdapter.addItem(new ChatListItem(m,user));
+			}
+			mHandler.sendMessage(new Message());
+		}
+
+		public void onHelloMsgRcved(List<ChatMessage> msgs) {
+			for(ChatMessage m : msgs){
+				User user = app.getUser(m.targetId);
+				msgListAdapter.addItem(new ChatListItem(m,user));
+			}
+			mHandler.sendMessage(new Message());
+		}
+
+		public void onRequestMsgRcved(List<ChatMessage> msgs) {
 			for(ChatMessage m : msgs){
 				User user = app.getUser(m.targetId);
 				msgListAdapter.addItem(new ChatListItem(m,user));
@@ -78,23 +100,23 @@ public class MsgListActivity extends Activity{
 			mHandler.sendMessage(new Message());
 		}
 	};
-	
+
 	private void initMsgListAdapter(){
 		msgListAdapter = new MsgListAdapter(this);
 		List<ChatListItem> tmp = app.getAllChattingList();
 		msgListAdapter.addItemDirectly(tmp);
 	}
-	
+
 	@Override
 	public void onPause(){
 		super.onPause();
 	}
-	
+
 	@Override
 	public void onStop(){
 		super.onResume();
 	}
-	
+
 	@Override
 	public void onDestroy(){
 		app.removeMsgRcvListener(m);

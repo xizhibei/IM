@@ -273,7 +273,7 @@ public class APIManager extends WebManager{
 
 	public int SendRequestForDemand(int did,int targetId){
 		String tmp;
-		tmp = "type=" + ChatMessage.MESSAGE_TYPE_REQUEST + "&audiotime=0&rcvId="+targetId+"&content=";
+		tmp = "type=" + ChatMessage.MESSAGE_TYPE_REQUEST + "&audiotime=0&rcvId="+targetId+"&content="+did;
 		tmp = PostData(addr + "/msg/send", tmp);
 		if(tmp != null){
 			Log.v("SendRequest ","SendRequestForDemand Recive data: "+tmp);

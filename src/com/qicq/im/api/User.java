@@ -34,6 +34,8 @@ public class User {
 	public float distance;
 	
 	public Demand demand = null;
+	
+	public int localUpdatetime;
 
 	public static User fromLogin(int uid,String name,String sex,int age,String regdate,String lastupdate,
 			int lat,int lng,float distance,String avatar,String localavatar){
@@ -56,6 +58,14 @@ public class User {
 		return u;
 	}
 
+	public static User fromDatabase(int type,int uid,String name,String sex,int age,String regdate,String lastupdate,
+			int lat,int lng,float distance,String avatar,String localavatar,int localUpdatetime){
+		User u = new User(type,uid,name,sex,age,regdate,lastupdate,
+				lat,lng,distance,avatar,localavatar);
+		u.localUpdatetime = localUpdatetime;
+		return u;
+	}
+	
 	public User(int type,int uid,String name,String sex,int age,String regdate,String lastupdate,
 			int lat,int lng,float distance,String avatar,String localavatar){
 		this.type = type;

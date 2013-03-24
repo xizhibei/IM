@@ -108,6 +108,12 @@ public class UserConfig {
         editor.commit();
 	}
 	
+	public boolean isUserNeedUpdate(int oldtime){
+		int time = (int) (new Date().getTime()/1000);
+		Log.v("Userconfig","User Time compare "+ time + " " + oldtime);
+		return time - oldtime > UPDATE_INTERVAL;
+	}
+	
 	public boolean isFriendNeedUpdate() {
 		return isNeedUpdate(FIELD_FRIEND_UPDATE_TIME);		
 	}

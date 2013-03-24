@@ -101,7 +101,7 @@ class UserController extends Zend_Controller_Action {
                 'sex' => $p ['sex'],
                 'age' => $p['age'],
                 'regdate' => $p ['regdate'],
-                'locupdate' => $p ['updatetime'],
+                'locupdate' => $p ['locupdatetime'],
                 'lat' => $p ['latitude'],
                 'lng' => $p ['longitude'],
                 'avatar' => $f->getAvatar($p['avatarid']),

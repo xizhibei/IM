@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.qicq.im.R;
+import com.qicq.im.api.ChatMessage;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -41,29 +43,37 @@ public class MsgListAdapter extends BaseAdapter {
 		return position;
 	}
 
-	public void addItem(ChatListItem m){
-		if(!mapedList.containsKey(m.msg.targetId)){
-			mapedList.put(m.msg.targetId,m);			
+	public void addItem(ChatListItem m){		
+		if(m.msg.type == ChatMessage.MESSAGE_TYPE_HELLO){
+			m.msg.targetId = ChatListItem.HELLO_ID;
+		}
+		else if(m.msg.type == ChatMessage.MESSAGE_TYPE_REQUEST){
+			m.msg.targetId = ChatListItem.REQUEST_ID;
+		}
+		String id = m.msg.targetId;
+		
+		if(!mapedList.containsKey(id)){
+			mapedList.put(id,m);
 		}else{
-			ChatListItem tmp = mapedList.get(m.msg.targetId);
+			ChatListItem tmp = mapedList.get(id);
 			if(tmp.msg.time < m.msg.time)
 				tmp.setCountAndMsg(m.msg);
-			mapedList.put(tmp.msg.targetId,tmp);
+			mapedList.put(id,tmp);
 		}
 	}
 
-	public void addItem(List<ChatListItem> cs){
+	public void addItemDirectly(List<ChatListItem> cs){
 		for(ChatListItem c : cs){
 			mapedList.put(c.msg.targetId,c);
 		}
 	}
-	
-	public void addItemDirectly(List<ChatListItem> cs){
-		for(ChatListItem c : cs){
-			addItem(c);
-		}
-	}
-	
+
+	//	public void addItem(List<ChatListItem> cs){
+	//		for(ChatListItem c : cs){
+	//			addItem(c);
+	//		}
+	//	}
+
 	public List<ChatListItem> getItems(){
 		return list;
 	}
@@ -91,6 +101,7 @@ public class MsgListAdapter extends BaseAdapter {
 		ViewHolder holder = null;
 		ChatListItem m = list.get(position);
 		if (convertView == null) {
+
 			convertView = LayoutInflater.from(context).inflate(R.layout.msg_item, null);
 
 			holder = new ViewHolder();
@@ -103,9 +114,21 @@ public class MsgListAdapter extends BaseAdapter {
 				Log.v("MsgListAdapter","Fail to get avatar: " + m.user.localAvatarPath);
 			else
 				holder.img.setImageDrawable(a);
-			holder.name.setText(m.user.name);
-			holder.info.setText(m.msg.content);
-			holder.time.setText(String.valueOf(m.unreadCount));
+			if(m.msg.type == ChatMessage.MESSAGE_TYPE_REQUEST){
+				//TODO Special item for request
+				holder.name.setText("请求");
+				holder.info.setText("您有新的来着" + m.user.name + " 的请求");
+				holder.time.setText(String.valueOf(m.unreadCount));
+			}else if(m.msg.type == ChatMessage.MESSAGE_TYPE_HELLO){
+				//TODO Special item for request
+				holder.name.setText("招呼");
+				holder.info.setText("您有新的来着" + m.user.name + " 的招呼");
+				holder.time.setText(String.valueOf(m.unreadCount));
+			}else{
+				holder.name.setText(m.user.name);
+				holder.info.setText(m.msg.content);
+				holder.time.setText(String.valueOf(m.unreadCount));
+			}
 		}
 		convertView.setTag(holder);
 		return convertView;

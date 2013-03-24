@@ -260,6 +260,16 @@ public class LBSApp extends Application{
 	public List<ChatMessage> getAllMsg(String targetid){
 		return service.dbUtil.fetchAllMsg(targetid);
 	}
+	
+	/**
+	 * fetch type in hello and request
+	 * @param targetid
+	 * @param type
+	 * @return
+	 */
+	public List<ChatMessage> getAllMsg(String targetid,int type){
+		return service.dbUtil.fetchAllMsg(targetid,type);
+	}
 
 	public void saveAllMsg(List<ChatMessage> msgs){
 		service.dbUtil.insertAllMsg(msgs);

@@ -4,6 +4,15 @@ import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.User;
 
 public class ChatListItem {
+	public static final int CHATLIST_ITEM_NORMAL = 1;
+	public static final int CHATLIST_ITEM_HELLO = 2;
+	public static final int CHATLIST_ITEM_REQUEST = 4;
+	
+	public static final String HELLO_ID = "-1";
+	public static final String REQUEST_ID = "-2";
+	
+	public int type = 1;
+	
 	public int unreadCount = 0;
 	//public String targetId;
 	

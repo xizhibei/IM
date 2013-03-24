@@ -50,8 +50,8 @@ public class MainActivity extends TabActivity {
 		
 		TabView view = null;
 
-		view = new TabView(this, R.drawable.location,
-				R.drawable.location_enabled);
+		view = new TabView(this, R.drawable.ic_nav_1_normal,
+				R.drawable.ic_nav_1_active);
 		view.setBackgroundDrawable(this.getResources().getDrawable(
 				R.drawable.tab_bg));
 		TabSpec recentContactSpec = tabHost.newTabSpec("Location");
@@ -59,7 +59,8 @@ public class MainActivity extends TabActivity {
 		Intent recentContactIntent = new Intent(this, NearbyActivity.class);
 		recentContactSpec.setContent(recentContactIntent);
 
-		view = new TabView(this, R.drawable.msg, R.drawable.msg_enabled);
+		view = new TabView(this, R.drawable.ic_nav_2_normal,
+				R.drawable.ic_nav_2_active);
 		view.setBackgroundDrawable(this.getResources().getDrawable(
 				R.drawable.tab_bg));
 		TabSpec contactBookSpec = tabHost.newTabSpec("Message");
@@ -67,7 +68,8 @@ public class MainActivity extends TabActivity {
 		Intent contactBookIntent = new Intent(this, MsgListActivity.class);
 		contactBookSpec.setContent(contactBookIntent);
 
-		view = new TabView(this, R.drawable.people, R.drawable.people_enabled);
+		view = new TabView(this, R.drawable.ic_nav_3_normal,
+				R.drawable.ic_nav_3_active);
 		view.setBackgroundDrawable(this.getResources().getDrawable(
 				R.drawable.tab_bg));
 		TabSpec smsMessageSpec = tabHost.newTabSpec("Friend");
@@ -75,7 +77,8 @@ public class MainActivity extends TabActivity {
 		Intent smsMessageIntent = new Intent(this, FriendActivity.class);
 		smsMessageSpec.setContent(smsMessageIntent);
 
-		view = new TabView(this, R.drawable.config, R.drawable.config_enabled);
+		view = new TabView(this, R.drawable.ic_nav_5_normal,
+				R.drawable.ic_nav_5_active);
 		view.setBackgroundDrawable(this.getResources().getDrawable(
 				R.drawable.tab_bg));
 		TabSpec settingSpec = tabHost.newTabSpec("Setting");

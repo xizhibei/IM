@@ -3,6 +3,7 @@ package com.qicq.im.db;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qicq.im.Utilities.Utility;
 import com.qicq.im.api.ChatMessage;
 import com.qicq.im.api.Demand;
 import com.qicq.im.api.User;
@@ -58,7 +59,28 @@ public class DBUtil {
 	}
 
 	public List<ChatMessage> fetchAllMsg(String targetId){
-		Cursor c = db.rawQuery("select * from msg where targetid = " + targetId + " order by time desc", null);
+		Cursor c = db.rawQuery("select * from msg where targetid = " + targetId + 
+				" and type <> " + ChatMessage.MESSAGE_TYPE_HELLO + 
+				" and type <> " + ChatMessage.MESSAGE_TYPE_REQUEST + " order by time desc", null);
+		List<ChatMessage> msgs = new ArrayList<ChatMessage>();
+		while(c.moveToNext()){//int direction, String content,String targetId,boolean isStored
+			msgs.add(ChatMessage.fromDatabase(
+					c.getInt(0),
+					c.getInt(1),
+					c.getString(2),
+					c.getString(3),
+					c.getInt(4),
+					c.getInt(5),
+					c.getInt(6),
+					c.getInt(7)));
+		}
+		c.close();
+		Log.v("MsgModel","get msg size" + msgs.size() + " with uid " + targetId);
+		return msgs;
+	}
+
+	public List<ChatMessage> fetchAllMsg(String targetId,int type){
+		Cursor c = db.rawQuery("select * from msg where targetid = " + targetId + " and type = " + type + " order by time desc", null);
 		List<ChatMessage> msgs = new ArrayList<ChatMessage>();
 		while(c.moveToNext()){//int direction, String content,String targetId,boolean isStored
 			msgs.add(ChatMessage.fromDatabase(
@@ -85,7 +107,7 @@ public class DBUtil {
 	}
 
 	private User getUser(Cursor c){
-		User u = new User(c.getInt(0),
+		User u = User.fromDatabase(c.getInt(0),
 				c.getInt(1), 
 				c.getString(2), 
 				c.getString(3), 
@@ -96,7 +118,8 @@ public class DBUtil {
 				c.getInt(8), 
 				c.getFloat(9), 
 				c.getString(10), 
-				c.getString(11)
+				c.getString(11),
+				c.getInt(13)
 				);
 		int did = c.getInt(12);
 		if(did != 0)
@@ -158,6 +181,8 @@ public class DBUtil {
 		cv.put("lat",u.lat);
 		cv.put("lng",u.lng);
 		cv.put("distance",u.distance);
+		cv.put("localUpdatetime", Utility.getDatetime());
+		
 		if(u.demand != null)
 			cv.put("did", u.demand.did);
 		else
@@ -225,6 +250,7 @@ public class DBUtil {
 	}
 
 	/*******************ChatList table begin********************/
+	
 	public void insertAllChatList(List<ChatListItem> msgs) {
 		for (ChatListItem m : msgs) {
 			ContentValues cv = new ContentValues();			
@@ -235,7 +261,11 @@ public class DBUtil {
 			cv.put("audiotime", m.msg.audioTime);
 			cv.put("sendstate",m.msg.sendState);
 			cv.put("count", m.unreadCount);
-
+			//Change target id into special id -1 and -2
+			if(m.msg.type == ChatMessage.MESSAGE_TYPE_HELLO)
+				m.msg.targetId = ChatListItem.HELLO_ID;
+			else if(m.msg.type == ChatMessage.MESSAGE_TYPE_REQUEST)
+				m.msg.targetId = ChatListItem.REQUEST_ID;
 
 			Cursor c = db.rawQuery("select * from chatlist where targetid = " + m.msg.targetId, null);
 			if(c.moveToNext()){
@@ -271,7 +301,7 @@ public class DBUtil {
 				db.insert("chatlist", null, cv);
 			}
 			else
-				db.update("chatlist", cv, "targetid = " + m.targetId, null);
+				db.update("chatlist", cv, "targetid = " +  m.targetId, null);
 			c.close();
 		}
 	}
@@ -405,4 +435,5 @@ public class DBUtil {
 			updateDemand(d);
 		}
 	}
+
 }

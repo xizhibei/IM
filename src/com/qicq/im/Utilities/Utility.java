@@ -54,6 +54,10 @@ public class Utility {
 		return false;  
 	}
 	
+	public static int getDatetime(){
+		return (int) (new Date().getTime()/1000);
+	}
+	
 	public static String getMD5(String str){
 		MessageDigest md;
 		try {

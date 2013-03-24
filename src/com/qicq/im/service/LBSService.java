@@ -10,7 +10,6 @@ import com.qicq.im.api.User;
 import com.qicq.im.config.SysConfig;
 import com.qicq.im.config.UserConfig;
 import com.qicq.im.db.DBUtil;
-import com.qicq.im.msg.MsgRcvEvent;
 import com.qicq.im.msg.MsgRcvListener;
 import com.qicq.im.thread.NetworkMonitorThread;
 import com.qicq.im.thread.RcvMessageThread;
@@ -76,13 +75,41 @@ public class LBSService extends Service {
 		
 		rcvMsgThread.addMsgRcvListener(new MsgRcvListener() {
 
-			public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
+			public void onMsgRcved(List<ChatMessage> msgs) {
 				if (userConfig.isShowNotification()) {
 					ChatMessage m = msgs.get(msgs.size() - 1);
 					if(!m.targetId.equals(talkingToId)){
 						User u = getUser(m.targetId);
 						showNotification(R.drawable.card,"新消息",u.name,m.content);
 					}
+				}
+				dbUtil.insertAllMsg(msgs);
+				dbUtil.updateChatListNewMsg(msgs);
+				for(ChatMessage m : msgs){
+					getUser(m.targetId);//Just update database to match chatlist
+				}
+			}
+
+			public void onHelloMsgRcved(List<ChatMessage> msgs) {
+				if (userConfig.isShowNotification()) {
+					ChatMessage m = msgs.get(msgs.size() - 1);
+					if(!m.targetId.equals(talkingToId)){
+						User u = getUser(m.targetId);
+						showNotification(R.drawable.card,"有人向你打招呼哦",u.name,m.content);
+					}
+				}
+				dbUtil.insertAllMsg(msgs);
+				dbUtil.updateChatListNewMsg(msgs);
+				for(ChatMessage m : msgs){
+					getUser(m.targetId);//Just update database to match chatlist
+				}
+			}
+
+			public void onRequestMsgRcved(List<ChatMessage> msgs) {
+				if (userConfig.isShowNotification()) {
+					ChatMessage m = msgs.get(msgs.size() - 1);
+					User u = getUser(m.targetId);
+					showNotification(R.drawable.card,"新的活动请求",u.name,m.content);					
 				}
 				dbUtil.insertAllMsg(msgs);
 				dbUtil.updateChatListNewMsg(msgs);
@@ -197,12 +224,11 @@ public class LBSService extends Service {
 
 	public User getUser(String uid){
 		User u = dbUtil.getUser(uid);
-		if(u == null || userConfig.isFriendNeedUpdate()){
+		if(u == null || userConfig.isUserNeedUpdate(u.localUpdatetime)){
 			User tmp = api.getUser(uid);
 			if(tmp != null){
 				u = tmp;
 				dbUtil.updateUser(tmp);
-				userConfig.setFriendUpdate();
 			}
 		}
 		return u;

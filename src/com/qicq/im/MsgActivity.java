@@ -43,7 +43,6 @@ import com.qicq.im.api.ChatMessage;
 import com.qicq.im.app.LBSApp;
 import com.qicq.im.config.SysConfig;
 import com.qicq.im.msg.ChattingAdapter;
-import com.qicq.im.msg.MsgRcvEvent;
 import com.qicq.im.msg.MsgRcvListener;
 import com.qicq.im.popwin.LBSToast;
 
@@ -240,7 +239,7 @@ public class MsgActivity extends Activity {
 
 	private MsgRcvListener m = new MsgRcvListener(){
 
-		public void onMsgRcved(MsgRcvEvent e, List<ChatMessage> msgs) {
+		public void onMsgRcved(List<ChatMessage> msgs) {
 			for(ChatMessage m : msgs){
 				Log.v("New msg for "+m.targetId,m.content);
 				if(m.targetId.equals(friendUID)){
@@ -248,6 +247,20 @@ public class MsgActivity extends Activity {
 				}
 			}
 			mHandler.sendMessage(new Message());
+		}
+
+		public void onHelloMsgRcved(List<ChatMessage> msgs) {
+			for(ChatMessage m : msgs){
+				Log.v("New hello msg for "+m.targetId,m.content);
+				if(m.targetId.equals(friendUID)){
+					messages.add(m);						
+				}
+			}
+			mHandler.sendMessage(new Message());
+			//TODO set msg to normal text message
+		}
+
+		public void onRequestMsgRcved(List<ChatMessage> msgs) {
 		}
 
 	};

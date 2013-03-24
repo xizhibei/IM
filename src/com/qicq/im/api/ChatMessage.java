@@ -41,6 +41,7 @@ public class ChatMessage {
 		msg.direction = MESSAGE_FROM;
 		msg.content = content;
 		msg.targetId = targetId;
+		msg.type = type;
 		msg.time = time;
 		msg.isReaded = false;
 		msg.audioTime = audiotime;

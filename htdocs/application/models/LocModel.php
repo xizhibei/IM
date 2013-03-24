@@ -206,7 +206,7 @@ class LocModel extends Zend_Db_Table_Abstract {
                 ), "uid = $uid");
     }
 
-    public function NearbyPeople($uid, $latitude, $longitude, $max_dis = 1) {
+    public function NearbyPeople($uid, $latitude, $longitude, $max_dis = 3) {
         $EARTH_RADIUS = 6378.137;
         $dlng = 2 * asin(sin($max_dis / (2 * $EARTH_RADIUS)) / cos(deg2rad($latitude / 1e6)));
         $dlng = rad2deg($dlng);

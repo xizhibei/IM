@@ -16,6 +16,7 @@ class FriendModel extends Zend_Db_Table_Abstract {
     const Fans = 2;
     const Friend = 3;
     const BLACK_LIST = 4;
+    const NEARBY = 8;
 
     protected $_name = 'friend';
 
